@@ -1,0 +1,93 @@
+name: appkickoff
+description: "A new Flutter project."
+publish_to: 'none' 
+
+version: 2.0.0
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  simple_animations: ^5.0.2
+  flutter_form_builder: ^9.1.1
+  font_awesome_flutter: ^10.7.0
+  intl: ^0.18.1
+  mailer: ^6.0.1
+  fluttertoast: ^8.2.4
+  flutter_email_sender: ^6.0.2
+  permission_handler: ^11.1.0
+  http: ^1.1.2
+  carousel_slider: ^4.2.1
+  google_fonts: ^6.2.1
+  get: ^4.6.6
+  badges: ^3.1.2
+  curved_navigation_bar: ^1.0.3
+  calendar_view: ^1.0.4
+  cloud_firestore: ^4.13.6
+  firebase_auth: ^4.6.0
+  firebase_core: ^2.7.0
+  firebase_core_platform_interface: ^5.0.0
+  path_provider: ^2.1.1
+  flutter_analog_clock: ^1.0.3
+  shared_preferences: ^2.2.2
+  url_launcher: ^6.2.2
+  webview_flutter: ^4.4.2
+  draggable_scrollbar: ^0.1.0
+  table_calendar: ^3.0.9
+  flutter_date_pickers: ^0.2.0
+  flutter_lints: ^4.0.0
+  csv: ^6.0.0
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  country_code_picker: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  path_provider:
+  provider: ^6.0.2
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+    android: "launcher_icon"
+    ios: true
+    image_path: "assets/kickofflogo.png"
+    min_sdk_android: 21 # android min sdk min:16, default 21
+    web:
+      generate: true
+      image_path: "assets/kickofflogo.png"
+      background_color: "#hexcode"
+      theme_color: "#hexcode"
+    windows:
+      generate: true
+      image_path: "assets/kickofflogo.png"
+      icon_size: 48 # min:48, max:256, default: 48
+    macos:
+      generate: true
+      image_path: "assets/kickofflogo.png"
+
+# The following section is specific to Flutter packages.
+flutter: 
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/
+    - assets/images/
+  
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+ 

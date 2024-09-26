@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "456045154554",
+    "project_id": "fac-academy",
+    "storage_bucket": "fac-academy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456045154554:android:4419bf10cf944b88dc7943",
+        "android_client_info": {
+          "package_name": "com.example.rare_signup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "456045154554-lk6nn2rikranj66baoht0m5j9tupsdmt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUKDGiO8QyBt-x3PNzOhdR7MX8GblEk-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456045154554-lk6nn2rikranj66baoht0m5j9tupsdmt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
