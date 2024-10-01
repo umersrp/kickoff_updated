@@ -4,8 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-
-import '../../../personalization/controllers/create_user_controller.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../personalization/controllers/booking_user_controller.dart';
+import '../../../personalization/models/booking_model.dart';
 import '../../../utils/constant/colors.dart';
 
 class Booktextfield extends StatefulWidget {
@@ -16,10 +17,12 @@ class Booktextfield extends StatefulWidget {
 }
 
 final TextEditingController nameController = TextEditingController();
+final TextEditingController lastController = TextEditingController();
+
 final TextEditingController emailController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 final TextEditingController phoneController = TextEditingController();
-final SignupController signupController = Get.put(SignupController());
+final BookingSignupController bookingsignupController = Get.put(BookingSignupController());
 
 bool _obscurePassword = true;
 
@@ -58,6 +61,31 @@ class _BooktextfieldState extends State<Booktextfield> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your first name';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 25,),
+            TextFormField(
+              controller: lastController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(FontAwesomeIcons.person,color: MyColors.primary,),
+                hintText: 'Last Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide(color: Colors.grey.shade300, width: 2.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: BorderSide(color: Colors.blue.shade300, width: 2.0),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your Last name';
                 }
                 return null;
               },
@@ -175,7 +203,7 @@ class _BooktextfieldState extends State<Booktextfield> {
             SizedBox(
               width: double.infinity,
               child: Obx(() {
-                return signupController.isLoading.value
+                return bookingsignupController.isLoading.value
                     ? Center(
                   child: Container(
                     width: 24.0,  // Adjust width as needed
@@ -191,122 +219,84 @@ class _BooktextfieldState extends State<Booktextfield> {
                     ),
                     backgroundColor: MyColors.primary,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     // Validation function
-                    // void showValidationDialog(String title, String content) {
-                    //   showDialog(
-                    //     context: context,
-                    //     builder: (BuildContext context) {
-                    //       return AlertDialog(
-                    //         title: Text(title),
-                    //         content: Text(content),
-                    //         actions: <Widget>[
-                    //           TextButton(
-                    //             child: Text('OK'),
-                    //             onPressed: () {
-                    //               Navigator.of(context).pop();
-                    //             },
-                    //           ),
-                    //         ],
-                    //       );
-                    //     },
-                    //   );
-                    // }
-                    //
-                    // // Validate first name
-                    // if (nameController == null || nameController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your First Name');
-                    //   return;
-                    // }
-                    //
-                    // // Validate last name
-                    // if (lastnameController == null || lastnameController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your Last Name');
-                    //   return;
-                    // }
-                    //
-                    // // Validate email
-                    // if (emailController == null || emailController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your email address');
-                    //   return;
-                    // } else if (emailController.text.trim().contains(RegExp(r'[A-Z]'))) {
-                    //   showValidationDialog('Invalid Input', 'Email should not contain uppercase letters');
-                    //   return;
-                    // } else if (!emailController.text.trim().contains('@') || !emailController.text.trim().contains('.')) {
-                    //   showValidationDialog('Invalid Format', 'Email format is invalid');
-                    //   return;
-                    // }
-                    //
-                    // // Validate parent name
-                    // if (parentnameController == null || parentnameController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your Parent Name');
-                    //   return;
-                    // }
-                    //
-                    // // Validate selected shift
-                    // if (phoneController == null || phoneController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your Phone Number');
-                    //   return;
-                    // }
-                    //
-                    // // Validate address
-                    // if (addressController == null || addressController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your Address');
-                    //   return;
-                    // }
-                    //
-                    // if (dobController == null || dobController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your Date Of Birth');
-                    //   return;
-                    // }
-                    //
-                    // if ( clubmembershipController == null || clubmembershipController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your MememberShip Number');
-                    //   return;
-                    // }
-                    //
-                    // if ( passwordController == null || passwordController.text.trim().isEmpty) {
-                    //   showValidationDialog('Input Required', 'Please enter your Password');
-                    //   return;
-                    // }
-                    //
-                    //
-                    // // Fetch selected schedule from scheduleController
-                    // final selectedScheduleItem = scheduleController.scheduleData.firstWhere(
-                    //       (schedule) => schedule.group == selectedSchedule,
-                    //   orElse: () => ScheduleModel(
-                    //     id: '',
-                    //     group: '',
-                    //     days: [],
-                    //     startTime: '',
-                    //     endTime: '',
-                    //     ages: '',
-                    //     location: '',
-                    //     v: 0,
-                    //     date: DateTime.now(),
-                    //   ),
-                    // );
-                    //
-                    // // Create a UserModel with filled data
-                    // final userModel = UserModel(
-                    //   name: nameController.text,
-                    //   lastname: lastnameController.text.isEmpty ? 'N/A' : lastnameController.text,
-                    //   parentname: parentnameController.text.isEmpty ? 'N/A' : parentnameController.text,
-                    //   email: emailController.text,
-                    //   password: passwordController.text,
-                    //   phone: phoneController.text.isEmpty ? 'N/A' : phoneController.text,
-                    //   address: addressController.text.isEmpty ? 'N/A' : addressController.text,
-                    //   dacc: signupController.DACCMembership.value,
-                    //   dob: dobController.text, // Selected Date of Birth
-                    //   gender: signupController.selectedGender.value,
-                    //   clubmembership: clubmembershipController.text.isEmpty ? 'N/A' : clubmembershipController.text,
-                    //   clubcardcopy: signupController.selectedClubCard.value,
-                    //   scheduleIds: selectedScheduleItem.id, // Selected schedule ID
-                    // );
-                    //
-                    // // Call the signup method with the user model
-                    // signupController.signupUser(userModel, context);
+                    void showValidationDialog(String title, String content) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(title),
+                            content: Text(content),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+
+                    // Validate first name
+                    if (nameController == null || nameController.text.trim().isEmpty) {
+                      showValidationDialog('Input Required', 'Please enter your First Name');
+                      return;
+                    }
+
+                    // Validate last name
+                    if (lastController == null || lastController.text.trim().isEmpty) {
+                      showValidationDialog('Input Required', 'Please enter your Last Name');
+                      return;
+                    }
+
+                    // Validate email
+                    if (emailController == null || emailController.text.trim().isEmpty) {
+                      showValidationDialog('Input Required', 'Please enter your email address');
+                      return;
+                    } else if (emailController.text.trim().contains(RegExp(r'[A-Z]'))) {
+                      showValidationDialog('Invalid Input', 'Email should not contain uppercase letters');
+                      return;
+                    } else if (!emailController.text.trim().contains('@') || !emailController.text.trim().contains('.')) {
+                      showValidationDialog('Invalid Format', 'Email format is invalid');
+                      return;
+                    }
+
+                    // Validate phone number
+                    if (phoneController == null || phoneController.text.trim().isEmpty) {
+                      showValidationDialog('Input Required', 'Please enter your Phone Number');
+                      return;
+                    }
+
+                    // Validate password
+                    if (passwordController == null || passwordController.text.trim().isEmpty) {
+                      showValidationDialog('Input Required', 'Please enter your Password');
+                      return;
+                    }
+
+                    // Save user data to SharedPreferences
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('firstName', nameController.text);
+                    await prefs.setString('lastName', lastController.text);
+                    await prefs.setString('email', emailController.text);
+                    await prefs.setString('phone', phoneController.text);
+
+                    final bookuserModel = BookUserModel(
+                      name: nameController.text,
+                      email: emailController.text,
+                      lastname: lastController.text,
+                      password: passwordController.text,
+                      regestrationtype: 'bookandplay',
+                      phone: phoneController.text,
+                    );
+
+                    // Call the signup method with the user model
+                    bookingsignupController.BookingsignupUser(bookuserModel, context);
                   },
+
                   child: Text(
                     'Register',
                     style: TextStyle(color: Colors.white),
@@ -314,10 +304,6 @@ class _BooktextfieldState extends State<Booktextfield> {
                 );
               }),
             ),
-
-
-
-
           ],
         ),
       ),

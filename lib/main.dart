@@ -19,7 +19,7 @@ void main() async {
             projectId: 'fac-academy',
         )
   ) : await Firebase.initializeApp();
-  Get.put(AuthService()); // Initialize AuthService
+  Get.put(AuthService());
   runApp(MyApp());
 }
 

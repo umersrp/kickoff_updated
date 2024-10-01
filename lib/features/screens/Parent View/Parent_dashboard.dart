@@ -17,6 +17,7 @@ import '../../../utils/global_function/Globalfunction.dart';
 import '../Login/login.dart';
 import '../alpha.dart';
 
+import '../bookandplay/listing_ground/ground_listing.dart';
 import 'ParentMonths.dart';
 import 'admission_form.dart';
 class NameAndEmail {
@@ -616,23 +617,10 @@ class _ParentDashboardState extends State<ParentDashboard> {
                   MaterialPageRoute(builder: (context) => ScreenMain()),
                 );
               } else if (currentIndex == 1) {
-                if (FirebaseAuth.instance.currentUser != null) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ShiftsListPage()),
+                    MaterialPageRoute(builder: (context) => GroundListingUI()),
                   );
-                } else {
-                  // User is not logged in, handle accordingly
-                  // For example, show a snackbar or navigate to the login page
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please login to view shifts')),
-                  );
-                  // You can also navigate to the login page:
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => LoginPage()),
-                  // );
-                }
               }
             });
           },

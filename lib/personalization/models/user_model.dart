@@ -19,6 +19,7 @@ class UserModel {
   String gender;
   String clubmembership;
   String clubcardcopy;
+  String regestrationtype;
 
   UserModel({
     required this.name,
@@ -34,6 +35,7 @@ class UserModel {
     required this.gender,
     required this.clubmembership,
     required this.clubcardcopy,
+    required this.regestrationtype,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -50,6 +52,7 @@ class UserModel {
     gender: json["gender"],
     clubmembership: json["clubmembership"],
     clubcardcopy: json["clubcardcopy"],
+      regestrationtype: json['regestrationtype'],
   );
 
   Map<String, dynamic> toJson() => {
@@ -66,5 +69,6 @@ class UserModel {
     "gender": gender,
     "clubmembership": clubmembership,
     "clubcardcopy": clubcardcopy,
+    "regestrationtype":   regestrationtype,
   };
 }

@@ -5,15 +5,13 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'dart:convert';
 import '../../../features/screens/Sign Up/signup.dart';
+import '../models/booking_model.dart';
 import '../models/user_model.dart';
 import 'aboutUs_controller.dart';
 
-class SignupController extends GetxController {
+class BookingSignupController extends GetxController {
   var isLoading = false.obs;
   var errorMessage = ''.obs;
-  var selectedGender = 'N/A'.obs;
-  var selectedClubCard = 'N/A'.obs;
-  var DACCMembership = 'N/A'.obs;
 
   void sendVerificationEmail(String recipientEmail, BuildContext context) async {
     try {
@@ -73,7 +71,7 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> signupUser(UserModel userModel, BuildContext context) async {
+  Future<void> BookingsignupUser(BookUserModel bookuserModel, BuildContext context) async {
     isLoading(true);
 
     try {
@@ -82,7 +80,7 @@ class SignupController extends GetxController {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: json.encode(userModel.toJson()),
+        body: json.encode(bookuserModel.toJson()),
       );
 
       if (response.statusCode == 201) {
@@ -103,7 +101,7 @@ class SignupController extends GetxController {
                     Text('Registration', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 8),
                     Text(
-                      'Thanks for registering with us. You can proceed to pay after receiving your slot confirmation by email.',
+                      'Thanks for registering with us. You Can Now Procced To Book The Venues',
                       style: TextStyle(fontSize: 16),
                     ),
                     SizedBox(height: 16),
@@ -113,7 +111,7 @@ class SignupController extends GetxController {
                         TextButton(
                           child: Text('OK'),
                           onPressed: () {
-                            sendVerificationEmail(userModel.email, context);
+                            sendVerificationEmail(bookuserModel.email, context);
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(builder: (context) => ScreenMain()),

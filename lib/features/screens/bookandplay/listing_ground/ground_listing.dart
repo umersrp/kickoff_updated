@@ -2,7 +2,9 @@ import 'package:appkickoff/utils/drawer/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../personalization/controllers/venus_controller.dart';
 import '../../../../personalization/login/controllers/login_controller.dart';
+import '../../../../personalization/models/venus_model.dart';
 import '../../../../utils/constant/colors.dart';
 import 'View_Ground_listing/ground_listing_view.dart';
 
@@ -14,10 +16,18 @@ class GroundListingUI extends StatefulWidget {
 class _GroundListingUIState extends State<GroundListingUI> {
   final TextEditingController searchController = TextEditingController();
   final LoginController _loginController = Get.put(LoginController());
-
+  final VenuesController _venuesController = Get.put(VenuesController()); // Add VenuesController
   bool showFilters = false;
 
   List<String> sports = ['Football', 'Basketball', 'Tennis', 'Cricket'];
+
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch venues when the screen is initialized
+    _venuesController.fetchVenues();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +42,9 @@ class _GroundListingUIState extends State<GroundListingUI> {
         elevation: 0,
         centerTitle: true,
       ),
-
       drawer: CustomDrawer(),
       body: Column(
         children: [
-
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -57,7 +65,9 @@ class _GroundListingUIState extends State<GroundListingUI> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(showFilters ? Icons.close : Icons.filter_list, color: MyColors.primary),
+                  icon: Icon(
+                      showFilters ? Icons.close : Icons.filter_list,
+                      color: MyColors.primary),
                   onPressed: () {
                     setState(() {
                       showFilters = !showFilters;
@@ -98,29 +108,41 @@ class _GroundListingUIState extends State<GroundListingUI> {
                   ),
                 );
               }
-             }
-            ),
-           ),
+            }),
+          ),
 
           // Ground Listing
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(12.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.75,
-              ),
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return _buildGroundCard();
-              },
-            ),
+            child: Obx(() {
+              if (_venuesController.isLoading.value) {
+                // Show loading indicator while data is being fetched
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (_venuesController.venuesList.isEmpty) {
+                // Show a message when no venues are available
+                return Center(child: Text('No grounds available.'));
+              }
+
+              // Display the venues in a GridView
+              return GridView.builder(
+                padding: const EdgeInsets.all(12.0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: _venuesController.venuesList.length,
+                itemBuilder: (context, index) {
+                  final venue = _venuesController.venuesList[index];
+                  return _buildGroundCard(venue);
+                },
+              );
+            }),
           ),
         ],
       ),
-
     );
   }
 
@@ -170,7 +192,7 @@ class _GroundListingUIState extends State<GroundListingUI> {
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Apply Filters', style: TextStyle(fontSize: 16,color: Colors.white)),
+              child: Text('Apply Filters', style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           ),
         ],
@@ -178,28 +200,32 @@ class _GroundListingUIState extends State<GroundListingUI> {
     );
   }
 
-  // Ground Card with Image Background
-  Widget _buildGroundCard() {
+
+
+  Widget _buildGroundCard(Venue venue,) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => View_Ground(
-              // groundName: 'Clifton Arena',
-              // location: 'Karachi, Pakistan',
+              venue: venue, // Use 'venue' from method argument
+              onSlotSelected: (selectedSlot) {
+              },
             ),
           ),
         );
       },
       child: Stack(
         children: [
-          // Background Image
+          // Background Image (handling list of image URLs from the database)
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               image: DecorationImage(
-                image: AssetImage('assets/hq720.jpg'),
+                image: (venue.images != null && venue.images.isNotEmpty && venue.images[0] is String)
+                    ? NetworkImage(venue.images[0] as String) // Explicitly cast to String
+                    : const NetworkImage('http://74.208.118.86/kickoff/uploads/image-1723201780192.png'), // Fallback image URL
                 fit: BoxFit.cover,
               ),
             ),
@@ -225,37 +251,24 @@ class _GroundListingUIState extends State<GroundListingUI> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Clifton Arena',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    )),
-                SizedBox(height: 4),
+                // Venue name
                 Text(
-                  'Karachi, Pakistan',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  venue.name ?? 'Unknown Venue', // Null safety for venue name
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 4), // Spacing between name and address
 
-                // Rating and Stars Row
-                Row(
-                  children: [
-                    Text(
-                      '4.5',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Icon(Icons.star, color: Colors.yellow[700], size: 16),
-                    Icon(Icons.star, color: Colors.yellow[700], size: 16),
-                    Icon(Icons.star, color: Colors.yellow[700], size: 16),
-                    Icon(Icons.star, color: Colors.yellow[700], size: 16),
-                    Icon(Icons.star_half, color: Colors.yellow[700], size: 16),
-                  ],
+                // Display address fields with null safety
+                Text(
+                  '${venue.address?.address ?? 'Unknown Address'}, ${venue.address?.city ?? 'Unknown City'},', // Null-safe access
+                  style: const TextStyle(
+                    color: Colors.white70, // Slightly lighter color for address
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),

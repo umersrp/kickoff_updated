@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../personalization/controllers/create_user_controller.dart';
 import '../../../../personalization/controllers/schedule_controller.dart';
 import '../../../../personalization/models/schedule_model.dart';
@@ -23,8 +24,7 @@ class _SignupPageState extends State<SignupPage> {
   final ScheduleController scheduleController = Get.put(ScheduleController());
   String selectedLocation = 'DA CREEK CLUB, KARACHI';
   String? selectedSchedule;
-  ScheduleModel? selectedScheduleItem; // Variable to hold the selected schedule item
-
+  ScheduleModel? selectedScheduleItem;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastnameController = TextEditingController();
@@ -41,6 +41,23 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController clubcardcopyController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nameController.text = prefs.getString('firstName') ?? '';
+      lastnameController.text = prefs.getString('lastName') ?? '';
+      emailController.text = prefs.getString('email') ?? '';
+      phoneController.text = prefs.getString('phone') ?? '';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
@@ -53,6 +70,7 @@ class _SignupPageState extends State<SignupPage> {
             SizedBox(height: 25,),
           TextFormField(
             controller: nameController,
+            readOnly: true,
             decoration: InputDecoration(
             prefixIcon: const Icon(FontAwesomeIcons.signature,color: MyColors.primary,),
             hintText: 'First Name',
@@ -80,6 +98,7 @@ class _SignupPageState extends State<SignupPage> {
 
           TextFormField(
             controller: lastnameController,
+            readOnly: true, // Make it read-only
             decoration: InputDecoration(
             prefixIcon: const Icon(FontAwesomeIcons.person,color: MyColors.primary,),
             hintText: 'Last Name',
@@ -108,6 +127,7 @@ class _SignupPageState extends State<SignupPage> {
             TextFormField(controller: parentnameController, decoration: InputDecoration(
             prefixIcon: const Icon(FontAwesomeIcons.handsHoldingChild,color: MyColors.primary,),
             hintText: 'Parent Name',
+
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -131,7 +151,9 @@ class _SignupPageState extends State<SignupPage> {
             SizedBox(height: 10,),
 
             TextFormField(
-              controller: emailController,  // Link the controller to TextField
+              controller: emailController,
+              readOnly: true, // Make it read-only
+
               decoration: InputDecoration(
             prefixIcon: const Icon(Icons.email,color: MyColors.primary,),
             hintText: 'Email',
@@ -158,6 +180,7 @@ class _SignupPageState extends State<SignupPage> {
 
             TextFormField(
               controller: phoneController,
+              readOnly: true, // Make it read-only
               decoration: InputDecoration(
                 prefixIcon: const Icon(
                   FontAwesomeIcons.phone,
@@ -642,7 +665,8 @@ class _SignupPageState extends State<SignupPage> {
                       gender: signupController.selectedGender.value,
                       clubmembership: clubmembershipController.text.isEmpty ? 'N/A' : clubmembershipController.text,
                       clubcardcopy: signupController.selectedClubCard.value,
-                      scheduleIds: selectedScheduleItem.id, // Selected schedule ID
+                      scheduleIds: selectedScheduleItem.id,
+                      regestrationtype: 'academy',
                     );
 
                     // Call the signup method with the user model
