@@ -1,13 +1,13 @@
 name: appkickoff
 description: "A new Flutter project."
- 
+
 publish_to: "none"
 
 version: 2.0.0+3
 
 environment:
   sdk: ">=3.2.3 <4.0.0"
- 
+
 dependencies:
   flutter:
     sdk: flutter
@@ -20,7 +20,7 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   intl: ^0.18.1
   mailer: ^6.0.1
-  fluttertoast: ^8.2.4
+  fluttertoast: #^8.2.4
   flutter_email_sender: ^6.0.2
   permission_handler: ^11.1.0
   http: ^1.1.2
@@ -56,7 +56,7 @@ dev_dependencies:
   provider: ^6.0.2
   flutter_launcher_icons: ^0.13.1
 
-flutter_launcher_icons:  
+flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/kickofflogo.png"
@@ -75,13 +75,13 @@ flutter_launcher_icons:
     image_path: "assets/kickofflogo.png"
 
 # The following section is specific to Flutter packages.
-flutter: 
+flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/ 
-    - assets/images/  
+    - assets/
+    - assets/images/
   # example:
   # fonts:
   #   - family: Schyler
@@ -94,4 +94,3 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
- 

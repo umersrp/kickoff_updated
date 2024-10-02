@@ -33,8 +33,8 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          // home: ScreenMain(),
-          home: VendorHomeScreen(),
+          home: ScreenMain(),
+          // home: VendorHomeScreen(),
         );
       },
     );
