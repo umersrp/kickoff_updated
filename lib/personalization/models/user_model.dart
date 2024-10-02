@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
@@ -19,6 +18,7 @@ class UserModel {
   String gender;
   String clubmembership;
   String clubcardcopy;
+  String regestrationtype;
 
   UserModel({
     required this.name,
@@ -34,37 +34,40 @@ class UserModel {
     required this.gender,
     required this.clubmembership,
     required this.clubcardcopy,
+    required this.regestrationtype,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    name: json["name"],
-    lastname: json["lastname"],
-    parentname: json["parentname"],
-    email: json["email"],
-    password: json["password"],
-    phone: json["phone"],
-    address: json["address"],
-    scheduleIds: json["scheduleIds"],
-    dacc: json["dacc"],
-    dob: json["dob"],
-    gender: json["gender"],
-    clubmembership: json["clubmembership"],
-    clubcardcopy: json["clubcardcopy"],
-  );
+        name: json["name"],
+        lastname: json["lastname"],
+        parentname: json["parentname"],
+        email: json["email"],
+        password: json["password"],
+        phone: json["phone"],
+        address: json["address"],
+        scheduleIds: json["scheduleIds"],
+        dacc: json["dacc"],
+        dob: json["dob"],
+        gender: json["gender"],
+        clubmembership: json["clubmembership"],
+        clubcardcopy: json["clubcardcopy"],
+        regestrationtype: json['regestrationtype'],
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "lastname": lastname,
-    "parentname": parentname,
-    "email": email,
-    "password": password,
-    "phone": phone,
-    "address": address,
-    "scheduleIds": scheduleIds,
-    "dacc": dacc,
-    "dob": dob,
-    "gender": gender,
-    "clubmembership": clubmembership,
-    "clubcardcopy": clubcardcopy,
-  };
+        "name": name,
+        "lastname": lastname,
+        "parentname": parentname,
+        "email": email,
+        "password": password,
+        "phone": phone,
+        "address": address,
+        "scheduleIds": scheduleIds,
+        "dacc": dacc,
+        "dob": dob,
+        "gender": gender,
+        "clubmembership": clubmembership,
+        "clubcardcopy": clubcardcopy,
+        "regestrationtype": regestrationtype,
+      };
 }

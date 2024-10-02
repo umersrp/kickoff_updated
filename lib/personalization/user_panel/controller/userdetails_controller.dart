@@ -1,9 +1,10 @@
+ 
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import '../models/userdetails_model.dart';
 import '../../controllers/aboutUs_controller.dart';
 import '../../service/controller/aboutUs_controller.dart';
-import '../models/userdetails_model.dart';
 
 class UserDetailsController extends GetxController {
   // State variables
@@ -12,10 +13,10 @@ class UserDetailsController extends GetxController {
   var errorMessage = ''.obs;
 
   // Dependency Injection
+ 
   final AuthService authService = Get.find<AuthService>();
 
-  // Method to fetch user profile data
-
+ 
   Future<void> fetchUserProfile() async {
     isLoading.value = true;
     errorMessage.value = '';

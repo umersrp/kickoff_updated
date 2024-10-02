@@ -23,9 +23,9 @@ class LoginController extends GetxController {
   var passwordController = TextEditingController();
   var obscurePassword = true.obs;
 
-  final AuthService authService =
-      Get.find<AuthService>(); // Get the AuthService
-
+ 
+  final AuthService authService = Get.find<AuthService>(); // Get the AuthService
+ 
   void toggleObscurePassword() {
     obscurePassword.value = !obscurePassword.value;
   }
@@ -40,9 +40,10 @@ class LoginController extends GetxController {
     super.onInit();
     _loadUserName();
   }
-
+ 
   Future<void> loginUser(
       BuildContext context, String username, String password) async {
+ 
     // Check if email or password is empty
     if (username.isEmpty || password.isEmpty) {
       Get.snackbar(
@@ -71,7 +72,9 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         var responseData = jsonDecode(response.body);
+ 
         log('Login successful: $responseData');
+ 
         final loginModel = loginModelFromJson(response.body);
         final userType = loginModel.user.type;
         final token = loginModel.token;
@@ -90,9 +93,8 @@ class LoginController extends GetxController {
       } else {
         // Extract error message from the response
         final errorResponse = jsonDecode(response.body);
-        String errorMsg =
-            errorResponse['message'] ?? 'Failed to load user data';
-
+         String errorMsg = errorResponse['message'] ?? 'Failed to load user data';
+ 
         Get.snackbar(
           'Error',
           errorMsg,
@@ -106,9 +108,10 @@ class LoginController extends GetxController {
       errorMessage.value = e.toString();
       Get.snackbar(
         'Error',
-        errorMessage.value.isNotEmpty
+         errorMessage.value.isNotEmpty
             ? errorMessage.value
             : 'An unknown error occurred',
+ 
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
@@ -119,10 +122,13 @@ class LoginController extends GetxController {
     }
   }
 
+ 
+
+
+
   // Helper function to handle navigation based on userType and status
-  void navigateBasedOnUserType(
-      BuildContext context, String userType, String status) {
-    if (status == 'active') {
+  void navigateBasedOnUserType(BuildContext context, String userType, String status) {
+     if (status == 'active') {
       if (userType == 'admin') {
         Navigator.pushReplacement(
           context,
@@ -133,6 +139,7 @@ class LoginController extends GetxController {
           context,
           MaterialPageRoute(builder: (context) => VendorHomeScreen()),
         );
+ 
       } else if (userType == 'coaches') {
         Navigator.pushReplacement(
           context,

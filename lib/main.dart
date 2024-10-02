@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:appkickoff/personalization/service/controller/aboutUs_controller.dart';
 import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
 import 'package:appkickoff/vendor/vendor_features/views/home/home.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ void main() async {
         ))
       : await Firebase.initializeApp();
   Get.put(AuthService()); // Initialize AuthService
+
   runApp(MyApp());
 }
 

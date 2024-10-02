@@ -240,6 +240,7 @@ class CustomDrawer extends StatelessWidget {
                     );
                   },
                 ),
+
               ListTile(
                 leading: const Icon(
                   Icons.private_connectivity_outlined,
