@@ -13,6 +13,7 @@ dependencies:
   simple_animations: ^5.0.2
   flutter_svg:
   iconsax:
+  shimmer:
   cached_network_image:
   flutter_form_builder: ^9.1.1
   font_awesome_flutter: ^10.7.0

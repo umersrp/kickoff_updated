@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../add_venue/add_venue.dart';
+import 'widget/booking_item_shimmer.dart';
 import 'widget/booking_list_item.dart';
 
 class ViewListingScreen extends StatelessWidget {
@@ -81,35 +82,49 @@ class ViewListingScreen extends StatelessWidget {
   _buildBookingList(ViewListingController controller) {
     return Obx(
       () {
-        if (controller.isLoading.value && controller.currentPage.value == 1) {
-          return const Text('Data loading');
-        } else {
-          return NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent &&
-                  !controller.isLoading.value &&
-                  controller.hasNextPage.value) {
-                controller.fetchVenues();
-              }
-              return false;
-            },
-            child: Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.zero,
-                physics: BouncingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: controller.vendorVenues.length,
-                separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                itemBuilder: (_, index) {
-                  return BookingListItemWidget(
-                    bookingItem: controller.vendorVenues[index],
-                  );
-                },
-              ),
+        // if (!controller.isLoading.value && controller.currentPage.value == 1) {
+        if (!controller.isLoading.value) {
+          // return const Text('Data loading');
+          return Expanded(
+            child: ListView.separated(
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 5,
+              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+              itemBuilder: (_, __) {
+                return BookingListItemShimmer();
+              },
             ),
           );
         }
+
+        ///
+        return NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels ==
+                    scrollInfo.metrics.maxScrollExtent &&
+                !controller.isLoading.value &&
+                controller.hasNextPage.value) {
+              controller.fetchVenues();
+            }
+            return false;
+          },
+          child: Expanded(
+            child: ListView.separated(
+              controller: controller.scrollController,
+              padding: EdgeInsets.zero,
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: controller.vendorVenues.length,
+              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+              itemBuilder: (_, index) {
+                return BookingListItemWidget(
+                  bookingItem: controller.vendorVenues[index],
+                );
+              },
+            ),
+          ),
+        );
       },
     );
   }
