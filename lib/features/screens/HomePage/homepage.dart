@@ -42,6 +42,8 @@ class _DashboardState extends State<Dashboard> {
       drawer: CustomDrawer(),
       backgroundColor: Colors.white,
       appBar: MyAppBar(),
+
+      /// body
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

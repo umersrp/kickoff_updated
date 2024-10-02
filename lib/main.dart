@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:appkickoff/personalization/service/controller/aboutUs_controller.dart';
+import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
+import 'package:appkickoff/vendor/vendor_features/views/home/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,10 +27,14 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      // home: ScreenMain(),
-      home: VendorLoginScreen(),
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          // home: ScreenMain(),
+          home: VendorHomeScreen(),
+        );
+      },
     );
   }
 }

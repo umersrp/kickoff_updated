@@ -1,16 +1,19 @@
 name: appkickoff
 description: "A new Flutter project."
-publish_to: 'none' 
+publish_to: "none"
 
-version: 2.0.0
+version: 2.0.0+3
 
 environment:
-  sdk: '>=3.2.3 <4.0.0'
+  sdk: ">=3.2.3 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   simple_animations: ^5.0.2
+  flutter_svg:
+  iconsax:
+  cached_network_image:
   flutter_form_builder: ^9.1.1
   font_awesome_flutter: ^10.7.0
   intl: ^0.18.1
@@ -52,32 +55,32 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
 
 flutter_launcher_icons:
-    android: "launcher_icon"
-    ios: true
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/kickofflogo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
     image_path: "assets/kickofflogo.png"
-    min_sdk_android: 21 # android min sdk min:16, default 21
-    web:
-      generate: true
-      image_path: "assets/kickofflogo.png"
-      background_color: "#hexcode"
-      theme_color: "#hexcode"
-    windows:
-      generate: true
-      image_path: "assets/kickofflogo.png"
-      icon_size: 48 # min:48, max:256, default: 48
-    macos:
-      generate: true
-      image_path: "assets/kickofflogo.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/kickofflogo.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/kickofflogo.png"
 
 # The following section is specific to Flutter packages.
-flutter: 
+flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
     - assets/images/
-  
+
   # example:
   # fonts:
   #   - family: Schyler
@@ -90,4 +93,3 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
- 

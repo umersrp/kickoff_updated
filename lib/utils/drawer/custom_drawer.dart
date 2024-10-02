@@ -27,7 +27,8 @@ class CustomDrawer extends StatelessWidget {
       future: _getUserType(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator()); // or any loading indicator
+          return Center(
+              child: CircularProgressIndicator()); // or any loading indicator
         }
         final userType = snapshot.data;
 
@@ -53,7 +54,9 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               // Conditionally show the Login tile
-              if (userType != 'admin' && userType != 'coaches' && userType != 'user')
+              if (userType != 'admin' &&
+                  userType != 'coaches' &&
+                  userType != 'user')
                 ListTile(
                   leading: const Icon(
                     Icons.admin_panel_settings_sharp,
@@ -93,7 +96,8 @@ class CustomDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => ParentDashboard()),
+                      MaterialPageRoute(
+                          builder: (context) => ParentDashboard()),
                     );
                   },
                 ),
@@ -108,7 +112,8 @@ class CustomDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => CoachesDashboard()),
+                      MaterialPageRoute(
+                          builder: (context) => CoachesDashboard()),
                     );
                   },
                 ),
@@ -138,20 +143,22 @@ class CustomDrawer extends StatelessWidget {
                   );
                 },
               ),
-              if (userType != 'admin' && userType != 'coaches' && userType != 'user')
+              if (userType != 'admin' &&
+                  userType != 'coaches' &&
+                  userType != 'user')
                 ListTile(
-                leading: const Icon(
-                  Icons.app_registration_outlined,
-                  color: Color(0xff2e2d77),
+                  leading: const Icon(
+                    Icons.app_registration_outlined,
+                    color: Color(0xff2e2d77),
+                  ),
+                  title: const Text('Register Now'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
                 ),
-                title: const Text('Register Now'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
-                },
-              ),
               ListTile(
                 leading: const Icon(
                   Icons.shopping_bag_rounded,
@@ -206,33 +213,33 @@ class CustomDrawer extends StatelessWidget {
               ),
               if (userType == 'user')
                 ListTile(
-                leading: const Icon(
-                  Icons.recent_actors_sharp,
-                  color: Color(0xff2e2d77),
+                  leading: const Icon(
+                    Icons.recent_actors_sharp,
+                    color: Color(0xff2e2d77),
+                  ),
+                  title: const Text('Player Record'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AdmissionForm()),
+                    );
+                  },
                 ),
-                title: const Text('Player Record'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AdmissionForm()),
-                  );
-                },
-              ),
               if (userType == 'user')
                 ListTile(
-                leading: const Icon(
-                  Icons.history_edu_rounded,
-                  color: Color(0xff2e2d77),
+                  leading: const Icon(
+                    Icons.history_edu_rounded,
+                    color: Color(0xff2e2d77),
+                  ),
+                  title: const Text('Player Attendance'),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => UserAttendanceScreen(),
+                      ),
+                    );
+                  },
                 ),
-                title: const Text('Player Attendance'),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => UserAttendanceScreen(),
-                    ),
-                  );
-                },
-              ),
               ListTile(
                 leading: const Icon(
                   Icons.private_connectivity_outlined,
@@ -261,9 +268,9 @@ class CustomDrawer extends StatelessWidget {
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.clear();
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (BuildContext context) => ScreenMain()),
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => ScreenMain()),
                     );
-
                   },
                 ),
             ],
