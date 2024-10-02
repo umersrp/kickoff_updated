@@ -82,8 +82,8 @@ class ViewListingScreen extends StatelessWidget {
   _buildBookingList(ViewListingController controller) {
     return Obx(
       () {
-        // if (!controller.isLoading.value && controller.currentPage.value == 1) {
-        if (!controller.isLoading.value) {
+        if (!controller.isLoading.value && controller.currentPage.value == 1) {
+          // if (!controller.isLoading.value) {
           // return const Text('Data loading');
           return Expanded(
             child: ListView.separated(
