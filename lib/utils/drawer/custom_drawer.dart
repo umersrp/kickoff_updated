@@ -82,14 +82,13 @@ class CustomDrawer extends StatelessWidget {
                     );
                   },
                 ),
-              // Conditionally show the Parent Dashboard tile if userType is 'user'
               if (userType == 'user')
                 ListTile(
                   leading: const Icon(
                     Icons.dashboard,
                     color: Color(0xff2e2d77),
                   ),
-                  title: const Text('Parent Dashboard'),
+                  title: const Text('Player Dashboard'),
                   onTap: () {
                     Navigator.pushReplacement(
                       context,

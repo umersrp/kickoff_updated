@@ -65,7 +65,7 @@ class _BooktextfieldState extends State<Booktextfield> {
                 return null;
               },
             ),
-            SizedBox(height: 25,),
+            SizedBox(height: 10,),
             TextFormField(
               controller: lastController,
               decoration: InputDecoration(
@@ -293,7 +293,6 @@ class _BooktextfieldState extends State<Booktextfield> {
                       phone: phoneController.text,
                     );
 
-                    // Call the signup method with the user model
                     bookingsignupController.BookingsignupUser(bookuserModel, context);
                   },
 

@@ -1,5 +1,7 @@
+import 'package:appkickoff/features/screens/Sign%20Up/signup.dart';
 import 'package:appkickoff/features/screens/bookandplay/login/loginbook&play.dart';
 import 'package:flutter/material.dart';
+import '../../../utils/constant/colors.dart';
 import '../../../utils/image_string/image_strings.dart';
 import '../Login/BookVenueLogin.dart';
 
@@ -9,6 +11,20 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 25),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ScreenMain()),
+            );
+          },
+        ),
+      ),
       body: Stack(
         children: [
           // Background image
@@ -81,6 +97,13 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                SizedBox(height: 30,),
+
+                TextButton(onPressed: () {
+
+                },
+                child: Text('Register As A Vendor',style: TextStyle(color: Colors.white,fontSize: 15),)),
+
               ],
             ),
           ),

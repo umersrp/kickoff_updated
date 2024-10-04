@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final venusModel = venusModelFromJson(jsonString);
-
 import 'dart:convert';
 
 VenusModel venusModelFromJson(String str) => VenusModel.fromJson(json.decode(str));
@@ -63,14 +59,14 @@ class Venue {
     String days;
     Address address;
     int capacity;
-    Sport sports;
+    String sports;
     List<String> timings;
     int price;
-    List<dynamic> images;
+    List<String> images;
     int numberOfPitches;
     List<Pitch> pitches;
     VendorId vendorId;
-    List<String> amenities;
+    List<Amenity> amenities;
     String status;
     DateTime date;
     int v;
@@ -102,14 +98,14 @@ class Venue {
         days: json["days"],
         address: Address.fromJson(json["address"]),
         capacity: json["capacity"],
-        sports: sportValues.map[json["sports"]]!,
+        sports: json["sports"],
         timings: List<String>.from(json["timings"].map((x) => x)),
         price: json["price"],
-        images: List<dynamic>.from(json["images"].map((x) => x)),
+        images: List<String>.from(json["images"].map((x) => x)),
         numberOfPitches: json["numberOfPitches"],
         pitches: List<Pitch>.from(json["pitches"].map((x) => Pitch.fromJson(x))),
         vendorId: VendorId.fromJson(json["vendorId"]),
-        amenities: List<String>.from(json["amenities"].map((x) => x)),
+        amenities: List<Amenity>.from(json["amenities"].map((x) => Amenity.fromJson(x))),
         status: json["status"],
         date: DateTime.parse(json["date"]),
         v: json["__v"],
@@ -122,14 +118,14 @@ class Venue {
         "days": days,
         "address": address.toJson(),
         "capacity": capacity,
-        "sports": sportValues.reverse[sports],
+        "sports": sports,
         "timings": List<dynamic>.from(timings.map((x) => x)),
         "price": price,
         "images": List<dynamic>.from(images.map((x) => x)),
         "numberOfPitches": numberOfPitches,
         "pitches": List<dynamic>.from(pitches.map((x) => x.toJson())),
         "vendorId": vendorId.toJson(),
-        "amenities": List<dynamic>.from(amenities.map((x) => x)),
+        "amenities": List<dynamic>.from(amenities.map((x) => x.toJson())),
         "status": status,
         "date": date.toIso8601String(),
         "__v": v,
@@ -160,10 +156,40 @@ class Address {
     };
 }
 
+class Amenity {
+    String id;
+    List<String> icon;
+    String description;
+    String? name;
+
+    Amenity({
+        required this.id,
+        required this.icon,
+        required this.description,
+        this.name,
+    });
+
+    factory Amenity.fromJson(Map<String, dynamic> json) => Amenity(
+        id: json["_id"],
+        icon: List<String>.from(json["icon"].map((x) => x)),
+        description: json["description"],
+        name: json["name"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "_id": id,
+        "icon": List<dynamic>.from(icon.map((x) => x)),
+        "description": description,
+        "name": name,
+    };
+}
+
 class Pitch {
     String pitchName;
-    Sport sportType;
+    String sportType;
     String size;
+    List<String> slot;
+    int? slotduration;
     List<Availability> availability;
     String id;
 
@@ -171,22 +197,28 @@ class Pitch {
         required this.pitchName,
         required this.sportType,
         required this.size,
+        required this.slot,
+        this.slotduration,
         required this.availability,
         required this.id,
     });
 
     factory Pitch.fromJson(Map<String, dynamic> json) => Pitch(
         pitchName: json["pitchName"],
-        sportType: sportValues.map[json["sportType"]]!,
+        sportType: json["sportType"],
         size: json["size"],
+        slot: List<String>.from(json["slot"].map((x) => x)),
+        slotduration: json["slotduration"],
         availability: List<Availability>.from(json["availability"].map((x) => Availability.fromJson(x))),
         id: json["_id"],
     );
 
     Map<String, dynamic> toJson() => {
         "pitchName": pitchName,
-        "sportType": sportValues.reverse[sportType],
+        "sportType": sportType,
         "size": size,
+        "slot": List<dynamic>.from(slot.map((x) => x)),
+        "slotduration": slotduration,
         "availability": List<dynamic>.from(availability.map((x) => x.toJson())),
         "_id": id,
     };
@@ -219,16 +251,6 @@ class Availability {
         "_id": id,
     };
 }
-
-enum Sport {
-    CRICKET,
-    FOOTBALL
-}
-
-final sportValues = EnumValues({
-    "cricket": Sport.CRICKET,
-    "football": Sport.FOOTBALL
-});
 
 class VendorId {
     String id;
@@ -272,16 +294,4 @@ class VendorId {
         "date": date.toIso8601String(),
         "__v": v,
     };
-}
-
-class EnumValues<T> {
-    Map<String, T> map;
-    late Map<T, String> reverseMap;
-
-    EnumValues(this.map);
-
-    Map<T, String> get reverse {
-        reverseMap = map.map((k, v) => MapEntry(v, k));
-        return reverseMap;
-    }
 }

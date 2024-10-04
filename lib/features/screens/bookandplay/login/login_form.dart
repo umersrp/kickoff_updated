@@ -44,6 +44,7 @@ class _SignupPageState extends State<SignupPage> {
   void initState() {
     super.initState();
     _loadUserData();
+    scheduleController.fetchScheduleData();
   }
 
 
@@ -396,13 +397,13 @@ class _SignupPageState extends State<SignupPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 const Text(
-                  'Are You DACC Member',
+                  'Are You DACC Member:',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(width: 16.0), // Space between the heading and checkboxes
+                SizedBox(width: 1.0), // Space between the heading and checkboxes
                 Obx(() => Row(
                   children: <Widget>[
                     Checkbox(

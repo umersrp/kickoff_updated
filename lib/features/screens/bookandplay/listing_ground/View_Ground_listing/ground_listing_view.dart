@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import '../../../../../personalization/controllers/booking_venue_controller.dart';
+import '../../../../../personalization/models/bookingslot_model.dart';
 import '../../../../../personalization/models/venus_model.dart';
 import '../../../../../utils/constant/colors.dart';
 
 class View_Ground extends StatefulWidget {
   final Venue venue;
   final Function(String selectedSlot) onSlotSelected;
+  final String? pitchId; // Add this field
+
+
 
   View_Ground({
     required this.venue,
     required this.onSlotSelected,
+    required this.pitchId,  // Add this to the constructor
   });
+
 
   @override
   _ViewGroundState createState() => _ViewGroundState();
@@ -20,7 +29,17 @@ class View_Ground extends StatefulWidget {
 
 class _ViewGroundState extends State<View_Ground> {
   String? _selectedSlot;
+  String? _selectedDay;
+  final BookingController bookingvenueController = Get.put(BookingController());
 
+  String _formatTime(String timeString) {
+    try {
+      DateTime dateTime = DateTime.parse(timeString);
+      return DateFormat.Hm().format(dateTime);
+    } catch (e) {
+      return timeString;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,14 +104,14 @@ class _ViewGroundState extends State<View_Ground> {
                       children: [
                         Icon(FontAwesomeIcons.moneyBill, color: MyColors.primary),
                         SizedBox(width: 18),
-                        Text(
-                          "Rs ${widget.venue.price}",
-                          style: GoogleFonts.ibmPlexMono(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          Text(
+                            "Rs ${widget.venue.price}",
+                            style: GoogleFonts.ibmPlexMono(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -127,24 +146,21 @@ class _ViewGroundState extends State<View_Ground> {
                         Icon(Icons.access_time, color: MyColors.primary),
                         SizedBox(width: 5),
                         Text(
-                          widget.venue.timings.isNotEmpty ? widget.venue.timings[0] : 'No timings available',
+                          widget.venue.timings.isNotEmpty
+                              ? _formatTime(widget.venue.timings[0])
+                              : 'No timings available',
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
                     ),
                   ),
-
                   SizedBox(height: 16),
-                  // Address Section
                   _buildAddressSection(),
                   SizedBox(height: 16),
-                  // SPORTS Section
                   _buildSportsSection(),
                   SizedBox(height: 16),
-                  // Amenities Section
                   _buildAmenitiesSection(),
                   SizedBox(height: 16),
-                  // Available Slots
                   _buildAvailableSlotsSection(),
                 ],
               ),
@@ -152,25 +168,66 @@ class _ViewGroundState extends State<View_Ground> {
           ),
         ],
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          onPressed: () {
-            if (_selectedSlot != null) {
-              widget.onSlotSelected(_selectedSlot!); // Pass selected slot to the callback
-            } else {
-              // Show a message to select a slot
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please select a slot")));
-            }
-          },
-          child: Text("BOOK SLOT", style: TextStyle(color: Colors.white)),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: MyColors.primary,
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            textStyle: TextStyle(fontSize: 18),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              // Check if a day and time slot are selected
+              if (_selectedTimeSlot == null || _selectedDay == null) {
+                Get.snackbar('Error', 'Please select a day and time slot before booking.');
+                return;
+              }
+
+              // Attempt to find the selected pitch based on availability
+              Pitch? selectedPitch;
+              try {
+                selectedPitch = widget.venue.pitches.firstWhere((pitch) =>
+                    pitch.availability.any((slot) =>
+                    slot.day == _selectedDay && slot.startTime + '-' + slot.endTime == _selectedTimeSlot));
+              } catch (e) {
+                Get.snackbar('Error', 'No available pitch found for the selected time slot.');
+                return;
+              }
+
+              // Split the selected time slot
+              final List<String> selectedTimes = _selectedTimeSlot!.split('-').map((e) => e.trim()).toList();
+              final String startTime = selectedTimes.isNotEmpty ? selectedTimes[0] : '';
+              final String endTime = selectedTimes.length > 1 ? selectedTimes[1] : '';
+
+              // Validate start and end times
+              if (startTime.isEmpty || endTime.isEmpty) {
+                Get.snackbar('Error', 'Invalid time slot selected.');
+                return;
+              }
+
+              // Create the booking model
+              final bookslotModel = BookslotModel(
+                venue: widget.venue.id,
+                pitch: selectedPitch.id,
+                bookingDate: DateFormat('dd-MM-yy').format(DateTime.now()),
+                startTime: startTime,
+                endTime: endTime,
+              );
+
+              // Create the booking
+              bookingvenueController.createBooking(
+                  context,
+                  bookslotModel,
+                  widget.venue.name,
+                  widget.venue.price.toString(),
+                  bookslotModel.startTime,
+                  bookslotModel.endTime
+              );
+
+            },
+            child: Text("BOOK SLOT", style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: MyColors.primary,
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              textStyle: TextStyle(fontSize: 18),
+            ),
           ),
         ),
-      ),
       backgroundColor: Colors.grey.shade100,
     );
   }
@@ -228,7 +285,6 @@ class _ViewGroundState extends State<View_Ground> {
     );
   }
 
-  // Build Sports Section
   Widget _buildSportsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,17 +301,40 @@ class _ViewGroundState extends State<View_Ground> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              widget.venue.address.address, // Dynamic Address
-              style: TextStyle(color: Colors.black),
-            ),
-          ]
+            _buildSportIcons("Cricket", Icons.sports_cricket),
+            _buildSportIcons("Football", Icons.sports_soccer),
+            _buildSportIcons("Tennis", Icons.sports_tennis),
+          ],
         ),
-
-
       ],
     );
   }
+
+  Widget _buildSportIcons(String sportName, IconData iconData) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: MyColors.primary,
+          child: Icon(
+            iconData,
+            size: 30,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          sportName,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color:  MyColors.black,
+          ),
+        ),
+      ],
+    );
+  }
+
 
   // Build Amenities Section
   Widget _buildAmenitiesSection() {
@@ -274,15 +353,20 @@ class _ViewGroundState extends State<View_Ground> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: widget.venue.amenities.map((amenity) {
-            return _buildSportIcon(amenity);
+            return _buildSportIcon(amenity.description, amenity.icon.isNotEmpty ? amenity.icon[0] : null);
           }).toList(),
         ),
+
       ],
     );
   }
 
-  // Build Available Slots Section
   Widget _buildAvailableSlotsSection() {
+    Set<String> uniqueDays = widget.venue.pitches
+        .expand((pitch) => pitch.availability)
+        .map((slot) => slot.day)
+        .toSet();
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
@@ -302,102 +386,209 @@ class _ViewGroundState extends State<View_Ground> {
             ),
           ),
           SizedBox(height: 8),
-
-          // Iterate over each pitch and its availability
-          Column(
-            children: widget.venue.pitches.map((pitch) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Pitch: ${pitch.pitchName}", // Assuming the pitch has a name
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: uniqueDays
+                  .map((day) => GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedDay = day;
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    color: _selectedDay == day ? MyColors.primary : Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    day,
                     style: TextStyle(
+                      color: _selectedDay == day ? Colors.white : Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
                     ),
                   ),
-                  SizedBox(height: 8),
-
-                  // Iterate over each availability slot
-                  Column(
-                    children: pitch.availability.map((slot) {
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedSlot = "${slot.day} ${slot.startTime}-${slot.endTime}"; // Update the selected slot
-                          });
-                        },
-                        child: _buildTimeCard(
-                          "${slot.day}: ${slot.startTime} - ${slot.endTime}",
-                          isSelected: _selectedSlot == "${slot.day} ${slot.startTime}-${slot.endTime}", // Pass selection state
-                        ),
-                      );
-                    }).toList(),
-                  ),
-
-                  SizedBox(height: 16),
-                ],
-              );
-            }).toList(),
+                ),
+              ))
+                  .toList(),
+            ),
           ),
+          SizedBox(height: 16),
+          _selectedDay != null ? _buildTimeSlots() : Container(),
         ],
       ),
     );
   }
 
+  String? _selectedTimeSlot;
 
-  // Helper Methods for Sport and Time Cards
-  Widget _buildSportIcon(String label) {
+  Widget _buildTimeSlots() {
+    List<Availability> selectedDaySlots = widget.venue.pitches
+        .expand((pitch) => pitch.availability)
+        .where((slot) => slot.day == _selectedDay)
+        .toList();
+
+    if (selectedDaySlots.isEmpty) {
+      return Text("No slots available for this day.");
+    }
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CircleAvatar(
-          radius: 25,
-          backgroundColor: MyColors.primary,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: selectedDaySlots.map((slot) {
+            bool isSelected = _selectedTimeSlot == slot.startTime + '-' + slot.endTime;
+
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (isSelected) {
+                    _selectedTimeSlot = null;
+                  } else {
+                    _selectedTimeSlot = slot.startTime + '-' + slot.endTime;
+                  }
+                });
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 4),
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                decoration: BoxDecoration(
+                  color: isSelected ? MyColors.primary : Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      "Start Time: ${_formatTime(slot.startTime)}",
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Text(
+                      "End Time: ${_formatTime(slot.endTime)}",
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black, // Change text color if selected
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
         ),
+
+        if (_selectedTimeSlot != null) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Text(
+              "Available Slots for the Selected Time:",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          _buildAvailableSlotsForSelectedPitch(),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildAvailableSlotsForSelectedPitch() {
+    Pitch selectedPitch = widget.venue.pitches.first;
+
+    List<String> availableSlots = selectedPitch.slot;
+
+    print("Available slots: $availableSlots");
+
+    if (availableSlots.isEmpty) {
+      return Text("No available slots for the selected pitch.");
+    }
+
+    return Column(
+      children: availableSlots.map((slot) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedTimeSlot = slot;
+              print("Selected Time Slot: $_selectedTimeSlot");
+            });
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 4),
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            decoration: BoxDecoration(
+              color: _selectedTimeSlot == slot ? MyColors.primary : Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  "Slot: $slot",
+                  style: TextStyle(
+                    color: _selectedTimeSlot == slot ? Colors.white : Colors.black,
+                    fontWeight: _selectedTimeSlot == slot ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+
+
+  // Show Image Dialog
+  void _showImageDialog(BuildContext context, String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.black,
+          child: Center(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              width: double.infinity,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSportIcon(String description, String? iconPath) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        iconPath != null
+            ? CircleAvatar(
+          backgroundColor: MyColors.primary,
+              maxRadius: 30,
+              child: Image.network(
+                        iconPath,
+                        width: 40,
+                        height: 40,
+                      ),
+            )
+            : Container(),
         SizedBox(height: 8),
-        Text(label, style: TextStyle(color: Colors.black)),
+        Text(
+          description,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
       ],
     );
   }
 
 
-  Widget _buildTimeCard(String time, {bool isSelected = false}) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4.0),
-      padding: EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        border: isSelected ? Border.all(color: MyColors.primary, width: 2) : null,
-        borderRadius: BorderRadius.circular(8.0),
-        color: isSelected ? MyColors.primary.withOpacity(0.2) : Colors.white,
-      ),
-      child: Center(
-        child: Text(
-          time,
-          style: TextStyle(
-            color: isSelected ? MyColors.primary : Colors.black,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showImageDialog(BuildContext context, String imageUrl) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Image.network(imageUrl),
-          actions: [
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

@@ -30,6 +30,8 @@ class VenuesController extends GetxController {
       if (response.statusCode == 200) {
         // Parse the response
         final VenusModel venusModel = venusModelFromJson(response.body);
+        print(response.statusCode);
+        print(response.body);
 
         // Update state with the list of venues
         venuesList.assignAll(venusModel.venues);

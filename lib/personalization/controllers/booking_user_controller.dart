@@ -5,6 +5,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'dart:convert';
 import '../../../features/screens/Sign Up/signup.dart';
+import '../../features/screens/Login/login.dart';
 import '../models/booking_model.dart';
 import '../models/user_model.dart';
 import 'aboutUs_controller.dart';
@@ -114,7 +115,7 @@ class BookingSignupController extends GetxController {
                             sendVerificationEmail(bookuserModel.email, context);
                             Navigator.pushAndRemoveUntil(
                               context,
-                              MaterialPageRoute(builder: (context) => ScreenMain()),
+                              MaterialPageRoute(builder: (context) => LoginPage()),
                                   (route) => false,
                             );
                           },

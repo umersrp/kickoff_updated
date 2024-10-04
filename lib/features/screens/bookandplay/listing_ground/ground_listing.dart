@@ -16,7 +16,7 @@ class GroundListingUI extends StatefulWidget {
 class _GroundListingUIState extends State<GroundListingUI> {
   final TextEditingController searchController = TextEditingController();
   final LoginController _loginController = Get.put(LoginController());
-  final VenuesController _venuesController = Get.put(VenuesController()); // Add VenuesController
+  final VenuesController _venuesController = Get.put(VenuesController());
   bool showFilters = false;
 
   List<String> sports = ['Football', 'Basketball', 'Tennis', 'Cricket'];
@@ -25,7 +25,6 @@ class _GroundListingUIState extends State<GroundListingUI> {
   @override
   void initState() {
     super.initState();
-    // Fetch venues when the screen is initialized
     _venuesController.fetchVenues();
   }
 
@@ -201,31 +200,31 @@ class _GroundListingUIState extends State<GroundListingUI> {
   }
 
 
-
-  Widget _buildGroundCard(Venue venue,) {
+  Widget _buildGroundCard(Venue venue) {
     return InkWell(
       onTap: () {
+        print('${venue.id}');
+        print('${venue.pitches.isNotEmpty ? venue.pitches[0].id : null }');
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => View_Ground(
-              venue: venue, // Use 'venue' from method argument
-              onSlotSelected: (selectedSlot) {
-              },
+              venue: venue,
+              pitchId: venue.pitches[0].id,
+              onSlotSelected: (selectedSlot) {},
             ),
           ),
         );
       },
       child: Stack(
         children: [
-          // Background Image (handling list of image URLs from the database)
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               image: DecorationImage(
                 image: (venue.images != null && venue.images.isNotEmpty && venue.images[0] is String)
-                    ? NetworkImage(venue.images[0] as String) // Explicitly cast to String
-                    : const NetworkImage('http://74.208.118.86/kickoff/uploads/image-1723201780192.png'), // Fallback image URL
+                    ? NetworkImage(venue.images[0] as String)
+                    : const NetworkImage(''),
                 fit: BoxFit.cover,
               ),
             ),
