@@ -15,13 +15,14 @@ import '../../../common/custom_image_view/custom_image_view.dart';
 import '../../../common/text_form_field/text_form_field.dart';
 import '../../../utils/constants/app_images.dart';
 import '../../../utils/helpers/http_helper.dart';
+import '../view_listing_controller/view_listing_controller.dart';
 import 'widgets/time_selection.dart';
 
 class AddVenueController extends GetxController {
   static AddVenueController get instance => Get.find();
 
   /// vars
-  final addVenueFormKey = GlobalKey<FormState>(); 
+  final addVenueFormKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final locationController = TextEditingController();
   final addressController = TextEditingController();
@@ -118,7 +119,6 @@ class AddVenueController extends GetxController {
         // 'amenities[]': '66ec131c1da9ed250e2ff36b',
       });
 
-       
       for (int i = 0; i < pitches.length; i++) {
         var pitch = pitches[i];
 
@@ -164,9 +164,11 @@ class AddVenueController extends GetxController {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 201) {
+        isLoading(false);
         log(await response.stream.bytesToString());
-        // Navigate to the next screen
-        // Get.off(() => ViewListingScreen(), transition: Transition.rightToLeft);
+        await ViewListingController.instance.fetchVenues();
+        Get.back();
+        // Get.off(() => ViewListingScreen(), transition: Transition.leftToRight);
       } else {
         log('Failed: ${response.reasonPhrase}');
         // Error handling

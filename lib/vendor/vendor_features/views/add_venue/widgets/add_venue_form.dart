@@ -311,13 +311,17 @@ class AddVenueForm extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text(
-                'Submit',
-                style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      color: Colors.white,
-                      fontSize: 16.h,
-                      fontWeight: FontWeight.bold,
-                    ),
+              child: Obx(
+                () => controller.isLoading.value
+                    ? CircularProgressIndicator()
+                    : Text(
+                        'Submit',
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Colors.white,
+                              fontSize: 16.h,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
               ),
             ),
           ),
