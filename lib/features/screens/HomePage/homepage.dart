@@ -21,8 +21,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-
-
+ 
   @override
   void initState() {
     // print(':::::::::: $isLoggedIn && $isSavedCredentials');
@@ -31,6 +30,7 @@ class _DashboardState extends State<Dashboard> {
 
   final HomepageController homepageController = Get.put(HomepageController());
   final List<String> imagesList = [
+ 
       'assets/Qwe.jpg',
   ];
   final List<String> gifLists = [
@@ -39,6 +39,7 @@ class _DashboardState extends State<Dashboard> {
   final CarouselController carouselController = CarouselController();
   int currentIndex = 0;
   @override
+ 
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +53,7 @@ class _DashboardState extends State<Dashboard> {
             children: [
               Container(
                 height: MediaQuery.of(context).size.height * 0.7,
+ 
                 decoration:  BoxDecoration(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(50.0),
@@ -79,6 +81,7 @@ class _DashboardState extends State<Dashboard> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
+ 
                                   MaterialPageRoute(builder: (context) => LoginScreen()),
                                 );
                               },
@@ -101,6 +104,7 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
               ),
+ 
         Obx(() {
           if (homepageController.isLoading.value) {
             return Center(child: CircularProgressIndicator()); // Show a loading indicator while fetching data
@@ -282,6 +286,7 @@ class Content extends StatelessWidget {
     required this.img,
     required this.headcolor,
     required this.heading,
+ 
   }) ;
 
   String  content;
@@ -292,6 +297,7 @@ class Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+ 
       child:   Container(
         height: MediaQuery.of(context).size.height*1,
         child: Stack(
@@ -308,6 +314,7 @@ class Content extends StatelessWidget {
                 children: [
                   const SizedBox(height: 10),
                   Padding(
+ 
                       padding: const EdgeInsets.only(
                         left: 12,
                         right: 12,
@@ -322,6 +329,7 @@ class Content extends StatelessWidget {
                         //     fontWeight: FontWeight.bold,
 
                         //     color: Color.fromARGB(255, 124, 20, 20)),
+ 
                       ), ),
                   ),
                   SizedBox(height: 20,),
@@ -340,6 +348,7 @@ class Content extends StatelessWidget {
                             height: 2,
                             color: Colors.white,
                           ),
+ 
                         ),),
                     ),
                   ),
@@ -353,6 +362,7 @@ class Content extends StatelessWidget {
   }
 }
 
+ 
 
 class Content1 extends StatelessWidget {
   Content1({
@@ -360,6 +370,7 @@ class Content1 extends StatelessWidget {
     required this.content,
     required this.img,
     required this.headcolor,
+ 
     required this.heading,});
 
   String  content;
@@ -370,6 +381,7 @@ class Content1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+ 
       child:   Container(
         height: MediaQuery.of(context).size.height*1,
         child: Stack(
@@ -390,6 +402,7 @@ class Content1 extends StatelessWidget {
                       left: 12,
                       right: 12,
                     ),
+ 
                     child:FadeAnimation(1.5, Text(
                       heading,
                       style: GoogleFonts.poppins(
@@ -408,6 +421,7 @@ class Content1 extends StatelessWidget {
                         right: 20,
                         bottom: 20,
                       ),
+ 
                       child:FadeAnimation(1.5, Text( content,
                         style: GoogleFonts.poppins(
                           fontSize: 16,

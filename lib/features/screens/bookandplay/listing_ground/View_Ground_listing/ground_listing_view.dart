@@ -14,14 +14,11 @@ class View_Ground extends StatefulWidget {
   final Function(String selectedSlot) onSlotSelected;
   final String? pitchId; // Add this field
 
-
-
   View_Ground({
     required this.venue,
     required this.onSlotSelected,
-    required this.pitchId,  // Add this to the constructor
+    required this.pitchId, // Add this to the constructor
   });
-
 
   @override
   _ViewGroundState createState() => _ViewGroundState();
@@ -94,7 +91,8 @@ class _ViewGroundState extends State<View_Ground> {
                   alignment: Alignment.bottomCenter,
                   child: Container(
                     margin: const EdgeInsets.all(16.0),
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 12.0),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(24.0),
@@ -102,16 +100,17 @@ class _ViewGroundState extends State<View_Ground> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(FontAwesomeIcons.moneyBill, color: MyColors.primary),
+                        Icon(FontAwesomeIcons.moneyBill,
+                            color: MyColors.primary),
                         SizedBox(width: 18),
-                          Text(
-                            "Rs ${widget.venue.price}",
-                            style: GoogleFonts.ibmPlexMono(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                        Text(
+                          "Rs ${widget.venue.price}",
+                          style: GoogleFonts.ibmPlexMono(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -168,66 +167,71 @@ class _ViewGroundState extends State<View_Ground> {
           ),
         ],
       ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ElevatedButton(
-            onPressed: () {
-              // Check if a day and time slot are selected
-              if (_selectedTimeSlot == null || _selectedDay == null) {
-                Get.snackbar('Error', 'Please select a day and time slot before booking.');
-                return;
-              }
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ElevatedButton(
+          onPressed: () {
+            // Check if a day and time slot are selected
+            if (_selectedTimeSlot == null || _selectedDay == null) {
+              Get.snackbar(
+                  'Error', 'Please select a day and time slot before booking.');
+              return;
+            }
 
-              // Attempt to find the selected pitch based on availability
-              Pitch? selectedPitch;
-              try {
-                selectedPitch = widget.venue.pitches.firstWhere((pitch) =>
-                    pitch.availability.any((slot) =>
-                    slot.day == _selectedDay && slot.startTime + '-' + slot.endTime == _selectedTimeSlot));
-              } catch (e) {
-                Get.snackbar('Error', 'No available pitch found for the selected time slot.');
-                return;
-              }
+            // Attempt to find the selected pitch based on availability
+            Pitch? selectedPitch;
+            try {
+              selectedPitch = widget.venue.pitches.firstWhere((pitch) =>
+                  pitch.availability.any((slot) =>
+                      slot.day == _selectedDay &&
+                      slot.startTime + '-' + slot.endTime ==
+                          _selectedTimeSlot));
+            } catch (e) {
+              Get.snackbar('Error',
+                  'No available pitch found for the selected time slot.');
+              return;
+            }
 
-              // Split the selected time slot
-              final List<String> selectedTimes = _selectedTimeSlot!.split('-').map((e) => e.trim()).toList();
-              final String startTime = selectedTimes.isNotEmpty ? selectedTimes[0] : '';
-              final String endTime = selectedTimes.length > 1 ? selectedTimes[1] : '';
+            // Split the selected time slot
+            final List<String> selectedTimes =
+                _selectedTimeSlot!.split('-').map((e) => e.trim()).toList();
+            final String startTime =
+                selectedTimes.isNotEmpty ? selectedTimes[0] : '';
+            final String endTime =
+                selectedTimes.length > 1 ? selectedTimes[1] : '';
 
-              // Validate start and end times
-              if (startTime.isEmpty || endTime.isEmpty) {
-                Get.snackbar('Error', 'Invalid time slot selected.');
-                return;
-              }
+            // Validate start and end times
+            if (startTime.isEmpty || endTime.isEmpty) {
+              Get.snackbar('Error', 'Invalid time slot selected.');
+              return;
+            }
 
-              // Create the booking model
-              final bookslotModel = BookslotModel(
-                venue: widget.venue.id,
-                pitch: selectedPitch.id,
-                bookingDate: DateFormat('dd-MM-yy').format(DateTime.now()),
-                startTime: startTime,
-                endTime: endTime,
-              );
+            // Create the booking model
+            final bookslotModel = BookslotModel(
+              venue: widget.venue.id,
+              pitch: selectedPitch.id,
+              bookingDate: DateFormat('dd-MM-yy').format(DateTime.now()),
+              startTime: startTime,
+              endTime: endTime,
+            );
 
-              // Create the booking
-              bookingvenueController.createBooking(
-                  context,
-                  bookslotModel,
-                  widget.venue.name,
-                  widget.venue.price.toString(),
-                  bookslotModel.startTime,
-                  bookslotModel.endTime
-              );
-
-            },
-            child: Text("BOOK SLOT", style: TextStyle(color: Colors.white)),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: MyColors.primary,
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              textStyle: TextStyle(fontSize: 18),
-            ),
+            // Create the booking
+            bookingvenueController.createBooking(
+                context,
+                bookslotModel,
+                widget.venue.name,
+                widget.venue.price.toString(),
+                bookslotModel.startTime,
+                bookslotModel.endTime);
+          },
+          child: Text("BOOK SLOT", style: TextStyle(color: Colors.white)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: MyColors.primary,
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            textStyle: TextStyle(fontSize: 18),
           ),
         ),
+      ),
       backgroundColor: Colors.grey.shade100,
     );
   }
@@ -328,13 +332,12 @@ class _ViewGroundState extends State<View_Ground> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
-            color:  MyColors.black,
+            color: MyColors.black,
           ),
         ),
       ],
     );
   }
-
 
   // Build Amenities Section
   Widget _buildAmenitiesSection() {
@@ -353,10 +356,10 @@ class _ViewGroundState extends State<View_Ground> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: widget.venue.amenities.map((amenity) {
-            return _buildSportIcon(amenity.description, amenity.icon.isNotEmpty ? amenity.icon[0] : null);
+            return _buildSportIcon(amenity.description,
+                amenity.icon.isNotEmpty ? amenity.icon[0] : null);
           }).toList(),
         ),
-
       ],
     );
   }
@@ -391,27 +394,32 @@ class _ViewGroundState extends State<View_Ground> {
             child: Row(
               children: uniqueDays
                   .map((day) => GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedDay = day;
-                  });
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    color: _selectedDay == day ? MyColors.primary : Colors.grey[200],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    day,
-                    style: TextStyle(
-                      color: _selectedDay == day ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ))
+                        onTap: () {
+                          setState(() {
+                            _selectedDay = day;
+                          });
+                        },
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          margin: EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            color: _selectedDay == day
+                                ? MyColors.primary
+                                : Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            day,
+                            style: TextStyle(
+                              color: _selectedDay == day
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ))
                   .toList(),
             ),
           ),
@@ -440,7 +448,8 @@ class _ViewGroundState extends State<View_Ground> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: selectedDaySlots.map((slot) {
-            bool isSelected = _selectedTimeSlot == slot.startTime + '-' + slot.endTime;
+            bool isSelected =
+                _selectedTimeSlot == slot.startTime + '-' + slot.endTime;
 
             return GestureDetector(
               onTap: () {
@@ -465,15 +474,19 @@ class _ViewGroundState extends State<View_Ground> {
                       "Start Time: ${_formatTime(slot.startTime)}",
                       style: TextStyle(
                         color: isSelected ? Colors.white : Colors.black,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
                     SizedBox(width: 20),
                     Text(
                       "End Time: ${_formatTime(slot.endTime)}",
                       style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black, // Change text color if selected
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected
+                            ? Colors.white
+                            : Colors.black, // Change text color if selected
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
                   ],
@@ -482,7 +495,6 @@ class _ViewGroundState extends State<View_Ground> {
             );
           }).toList(),
         ),
-
         if (_selectedTimeSlot != null) ...[
           Padding(
             padding: const EdgeInsets.only(top: 16),
@@ -521,7 +533,9 @@ class _ViewGroundState extends State<View_Ground> {
             margin: EdgeInsets.symmetric(vertical: 4),
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             decoration: BoxDecoration(
-              color: _selectedTimeSlot == slot ? MyColors.primary : Colors.grey[200],
+              color: _selectedTimeSlot == slot
+                  ? MyColors.primary
+                  : Colors.grey[200],
               borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
@@ -529,8 +543,11 @@ class _ViewGroundState extends State<View_Ground> {
                 Text(
                   "Slot: $slot",
                   style: TextStyle(
-                    color: _selectedTimeSlot == slot ? Colors.white : Colors.black,
-                    fontWeight: _selectedTimeSlot == slot ? FontWeight.bold : FontWeight.normal,
+                    color:
+                        _selectedTimeSlot == slot ? Colors.white : Colors.black,
+                    fontWeight: _selectedTimeSlot == slot
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
               ],
@@ -540,8 +557,6 @@ class _ViewGroundState extends State<View_Ground> {
       }).toList(),
     );
   }
-
-
 
   // Show Image Dialog
   void _showImageDialog(BuildContext context, String imageUrl) {
@@ -568,14 +583,14 @@ class _ViewGroundState extends State<View_Ground> {
       children: [
         iconPath != null
             ? CircleAvatar(
-          backgroundColor: MyColors.primary,
-              maxRadius: 30,
-              child: Image.network(
-                        iconPath,
-                        width: 40,
-                        height: 40,
-                      ),
-            )
+                backgroundColor: MyColors.primary,
+                maxRadius: 30,
+                child: Image.network(
+                  iconPath,
+                  width: 40,
+                  height: 40,
+                ),
+              )
             : Container(),
         SizedBox(height: 8),
         Text(
@@ -589,6 +604,4 @@ class _ViewGroundState extends State<View_Ground> {
       ],
     );
   }
-
-
 }

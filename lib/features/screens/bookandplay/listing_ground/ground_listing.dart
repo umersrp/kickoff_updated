@@ -21,7 +21,6 @@ class _GroundListingUIState extends State<GroundListingUI> {
 
   List<String> sports = ['Football', 'Basketball', 'Tennis', 'Cricket'];
 
-
   @override
   void initState() {
     super.initState();
@@ -64,8 +63,7 @@ class _GroundListingUIState extends State<GroundListingUI> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(
-                      showFilters ? Icons.close : Icons.filter_list,
+                  icon: Icon(showFilters ? Icons.close : Icons.filter_list,
                       color: MyColors.primary),
                   onPressed: () {
                     setState(() {
@@ -165,7 +163,8 @@ class _GroundListingUIState extends State<GroundListingUI> {
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.grey[100],
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             ),
             hint: Text('Select Sport'),
             items: sports.map((String sport) {
@@ -180,7 +179,8 @@ class _GroundListingUIState extends State<GroundListingUI> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: MyColors.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             onPressed: () {
@@ -191,7 +191,8 @@ class _GroundListingUIState extends State<GroundListingUI> {
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Apply Filters', style: TextStyle(fontSize: 16, color: Colors.white)),
+              child: Text('Apply Filters',
+                  style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           ),
         ],
@@ -199,12 +200,11 @@ class _GroundListingUIState extends State<GroundListingUI> {
     );
   }
 
-
   Widget _buildGroundCard(Venue venue) {
     return InkWell(
       onTap: () {
         print('${venue.id}');
-        print('${venue.pitches.isNotEmpty ? venue.pitches[0].id : null }');
+        print('${venue.pitches.isNotEmpty ? venue.pitches[0].id : null}');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -222,7 +222,9 @@ class _GroundListingUIState extends State<GroundListingUI> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               image: DecorationImage(
-                image: (venue.images != null && venue.images.isNotEmpty && venue.images[0] is String)
+                image: (venue.images != null &&
+                        venue.images.isNotEmpty &&
+                        venue.images[0] is String)
                     ? NetworkImage(venue.images[0] as String)
                     : const NetworkImage(''),
                 fit: BoxFit.cover,
@@ -276,6 +278,4 @@ class _GroundListingUIState extends State<GroundListingUI> {
       ),
     );
   }
-
-
 }

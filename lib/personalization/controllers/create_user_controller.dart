@@ -59,6 +59,8 @@ class SignupController extends GetxController {
 
       await send(message, smtpServer);
 
+      // Show success message
+ 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Verification email sent. Please check your inbox.'),

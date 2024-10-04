@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
@@ -39,36 +38,36 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    name: json["name"],
-    lastname: json["lastname"],
-    parentname: json["parentname"],
-    email: json["email"],
-    password: json["password"],
-    phone: json["phone"],
-    address: json["address"],
-    scheduleIds: json["scheduleIds"],
-    dacc: json["dacc"],
-    dob: json["dob"],
-    gender: json["gender"],
-    clubmembership: json["clubmembership"],
-    clubcardcopy: json["clubcardcopy"],
-      regestrationtype: json['regestrationtype'],
-  );
+        name: json["name"],
+        lastname: json["lastname"],
+        parentname: json["parentname"],
+        email: json["email"],
+        password: json["password"],
+        phone: json["phone"],
+        address: json["address"],
+        scheduleIds: json["scheduleIds"],
+        dacc: json["dacc"],
+        dob: json["dob"],
+        gender: json["gender"],
+        clubmembership: json["clubmembership"],
+        clubcardcopy: json["clubcardcopy"],
+        regestrationtype: json['regestrationtype'],
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "lastname": lastname,
-    "parentname": parentname,
-    "email": email,
-    "password": password,
-    "phone": phone,
-    "address": address,
-    "scheduleIds": scheduleIds,
-    "dacc": dacc,
-    "dob": dob,
-    "gender": gender,
-    "clubmembership": clubmembership,
-    "clubcardcopy": clubcardcopy,
-    "regestrationtype":   regestrationtype,
-  };
+        "name": name,
+        "lastname": lastname,
+        "parentname": parentname,
+        "email": email,
+        "password": password,
+        "phone": phone,
+        "address": address,
+        "scheduleIds": scheduleIds,
+        "dacc": dacc,
+        "dob": dob,
+        "gender": gender,
+        "clubmembership": clubmembership,
+        "clubcardcopy": clubcardcopy,
+        "regestrationtype": regestrationtype,
+      };
 }

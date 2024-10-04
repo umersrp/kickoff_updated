@@ -1,9 +1,14 @@
+import 'dart:developer';
+
+import 'package:appkickoff/vendor/authentication/views/login/vendor_login.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../personalization/login/controllers/login_controller.dart';
 import '../../../utils/global_function/Globalfunction.dart';
 import '../Sign Up/Register_page.dart';
+import '../../../vendor/authentication/views/sign_up/signup.dart';
 import '../bookandplay/login/loginbook&play.dart';
 
 class LoginPage extends StatelessWidget {
