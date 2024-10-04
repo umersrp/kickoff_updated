@@ -8,6 +8,7 @@ import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
 import 'package:appkickoff/vendor/vendor_features/controllers/view_listing_controller/view_listing_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import '../add_venue/add_venue.dart';
 import 'widget/booking_item_shimmer.dart';
@@ -83,7 +84,6 @@ class ViewListingScreen extends StatelessWidget {
     return Obx(
       () {
         if (!controller.isLoading.value && controller.currentPage.value == 1) {
-          // if (!controller.isLoading.value) {
           // return const Text('Data loading');
           return Expanded(
             child: ListView.separated(
@@ -96,35 +96,46 @@ class ViewListingScreen extends StatelessWidget {
               },
             ),
           );
-        }
-
-        ///
-        return NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels ==
-                    scrollInfo.metrics.maxScrollExtent &&
-                !controller.isLoading.value &&
-                controller.hasNextPage.value) {
-              controller.fetchVenues();
-            }
-            return false;
-          },
-          child: Expanded(
-            child: ListView.separated(
-              controller: controller.scrollController,
-              padding: EdgeInsets.zero,
-              physics: BouncingScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: controller.vendorVenues.length,
-              separatorBuilder: (_, __) => SizedBox(height: 12.h),
-              itemBuilder: (_, index) {
-                return BookingListItemWidget(
-                  bookingItem: controller.vendorVenues[index],
-                );
-              },
+        } else if (controller.vendorVenues.isEmpty) {
+          return Center(
+            child: Text(
+              'No venues found!',
+              style: GoogleFonts.inter(
+                // textStyle: Theme.of(Get.context!).textTheme.displayLarge,
+                fontSize: 28,
+                color: AppColors.gray100,
+                fontWeight: FontWeight.w700,
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          return NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo.metrics.pixels ==
+                      scrollInfo.metrics.maxScrollExtent &&
+                  !controller.isLoading.value &&
+                  controller.hasNextPage.value) {
+                controller.fetchVenues();
+              }
+              return false;
+            },
+            child: Expanded(
+              child: ListView.separated(
+                controller: controller.scrollController,
+                padding: EdgeInsets.zero,
+                physics: BouncingScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: controller.vendorVenues.length,
+                separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                itemBuilder: (_, index) {
+                  return BookingListItemWidget(
+                    bookingItem: controller.vendorVenues[index],
+                  );
+                },
+              ),
+            ),
+          );
+        }
       },
     );
   }

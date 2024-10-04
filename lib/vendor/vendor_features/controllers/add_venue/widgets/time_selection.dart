@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../common/text_form_field/text_form_field.dart';
+import '../../../../utils/constants/app_colors.dart';
 
 class TimeSelectionField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final Widget? suffix;
+  final EdgeInsets? contentPadding;
 
   TimeSelectionField({
     required this.controller,
     required this.hintText,
+    this.suffix,
+    this.contentPadding,
   });
 
   @override
@@ -17,10 +22,14 @@ class TimeSelectionField extends StatelessWidget {
     return CustomTextFormField(
       controller: controller,
       hintText: hintText,
-      hintStyle: TextStyle(color: Colors.grey),
+      hintStyle: Theme.of(context)
+          .textTheme
+          .titleSmall!
+          .copyWith(color: AppColors.blueGray100),
       filled: true,
       readOnly: true, // Make it read-only
-      // suffix: Icon(Icons.timer, size: 14),
+      suffix: suffix,
+      contentPadding: contentPadding,
       onTap: () async {
         TimeOfDay? pickedTime = await showTimePicker(
           context: context,

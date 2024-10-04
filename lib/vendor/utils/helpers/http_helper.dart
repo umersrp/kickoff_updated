@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class VendorHttpHelper {
   /// base url
-  static const String _baseUrl = 'http://74.208.118.86/kickoff/api';
+  static const String baseUrl = 'http://74.208.118.86/kickoff/api';
 
   /// get token
   static Future<String> getToken() async {
@@ -21,7 +21,7 @@ class VendorHttpHelper {
   static Future<Map<String, dynamic>> get(String endPoints) async {
     final token = await getToken();
     final response = await http.get(
-      Uri.parse('$_baseUrl/$endPoints'),
+      Uri.parse('$baseUrl/$endPoints'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -33,7 +33,7 @@ class VendorHttpHelper {
   static Future<Map<String, dynamic>> post(
       String endPoints, dynamic data) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/$endPoints'),
+      Uri.parse('$baseUrl/$endPoints'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(data),
     );
@@ -43,7 +43,7 @@ class VendorHttpHelper {
   static Future<http.Response> post2(String endPoints, dynamic data) async {
     final token = await getToken();
     final response = await http.post(
-      Uri.parse('$_baseUrl/$endPoints'),
+      Uri.parse('$baseUrl/$endPoints'),
       headers: {
         'Content-Type': 'application/json',
         // 'Authorization': '$token',
@@ -56,7 +56,7 @@ class VendorHttpHelper {
 
   /// DELETE
   static Future<Map<String, dynamic>> delete(String endPoints) async {
-    final response = await http.delete(Uri.parse('$_baseUrl/$endPoints'));
+    final response = await http.delete(Uri.parse('$baseUrl/$endPoints'));
     return _handleResponse(response);
   }
 
@@ -64,7 +64,7 @@ class VendorHttpHelper {
   static Future<Map<String, dynamic>> put(
       String endPoints, dynamic data) async {
     final response = await http.put(
-      Uri.parse('$_baseUrl/$endPoints'),
+      Uri.parse('$baseUrl/$endPoints'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(data),
     );

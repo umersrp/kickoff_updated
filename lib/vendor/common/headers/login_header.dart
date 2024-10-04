@@ -16,7 +16,7 @@ class LoginHeader extends StatelessWidget {
             height: 100,
             width: 110,
             fit: BoxFit.contain,
-            image: AssetImage(AppImages.logo),
+            image: AssetImage(AppImages.logo5000x5000),
           ),
         ),
         Text(

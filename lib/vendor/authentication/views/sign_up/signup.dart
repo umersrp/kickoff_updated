@@ -1,4 +1,5 @@
 import 'package:appkickoff/vendor/authentication/controllers/signup_controller/signup_controller.dart';
+import 'package:appkickoff/vendor/common/app_bar/app_bar.dart';
 import 'package:appkickoff/vendor/common/headers/login_header.dart';
 import 'package:appkickoff/vendor/utils/constants/app_colors.dart';
 import 'package:appkickoff/vendor/utils/constants/bg_image.dart';
@@ -22,6 +23,14 @@ class VendorSignupScreen extends StatelessWidget {
         Scaffold(
           key: UniqueKey(),
           backgroundColor: AppColors.primary.withOpacity(0.5),
+
+          /// app bar
+          // appBar: CustomAppBar(
+          //   bgColor: AppColors.primary.withOpacity(0.5),
+          //   title: Text('Sign up'),
+          // ),
+
+          /// Main body
           body: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(24),

@@ -1,11 +1,14 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:appkickoff/vendor/common/dropdown_button/dropdown_button.dart';
 import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
 import 'package:appkickoff/vendor/vendor_features/views/view_listing/view_listing.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../common/app_snackbars/snackbars.dart';
 import '../../../common/custom_image_view/custom_image_view.dart';
@@ -18,28 +21,55 @@ class AddVenueController extends GetxController {
   static AddVenueController get instance => Get.find();
 
   /// vars
-  final addVenueFormKey = GlobalKey<FormState>();
-
+  final addVenueFormKey = GlobalKey<FormState>(); 
   final nameController = TextEditingController();
   final locationController = TextEditingController();
-  // final amenitiesController = TextEditingController();
-  final daysController = TextEditingController();
   final addressController = TextEditingController();
   final cityController = TextEditingController();
   final capacityController = TextEditingController();
+  final startTimingController = TextEditingController();
+  final endTimingController = TextEditingController();
   final priceController = TextEditingController();
-  final timingsController = TextEditingController();
   final numberOfPitchesController = TextEditingController();
+  final amenitiesController = TextEditingController();
+  // File? selectedImage;
+  var selectedImage = Rx<File?>(null);
   var selectedCategory = ''.obs;
-
-  // var pitches = <Map<String, dynamic>>[].obs;
+  var selectedDay = ''.obs;
   var pitches = [].obs;
 
   final isLoading = false.obs;
+  final token = ''.obs;
 
   /// oninit
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    token.value = await getToken();
+    // log('token.value == ${token.value}');
+  }
 
-  /// build SignUp
+  /// get token
+  static Future<String> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('authToken') ?? '';
+    // log('Token In Create Venue: $token');
+    return token;
+  }
+
+  /// Function to pick image from gallery
+  Future<void> pickImage() async {
+    try {
+      final pickedImage = await ImagePicker()
+          .pickImage(source: ImageSource.gallery, imageQuality: 80);
+      if (pickedImage == null) return;
+      selectedImage.value = File(pickedImage.path);
+      update(); // To update UI after image is picked
+    } catch (e) {
+      log('picked Image Funtion ::: $e');
+    }
+  }
+
   Future<void> buildSubmit() async {
     try {
       /// Start Loading
@@ -52,41 +82,99 @@ class AddVenueController extends GetxController {
         return;
       }
 
-      /// prepare sign up data
-      final data = {
+      /// Authorization headers
+      var headers = {
+        'Authorization': 'Bearer ${token.value}',
+        'Content-Type': 'multipart/form-data',
+      };
+      log('headers ::: ${headers}');
+
+      /// Create the Multipart request
+      var _baseUrl = VendorHttpHelper.baseUrl;
+      log('_baseUrl ::: $_baseUrl');
+      var url = Uri.parse('$_baseUrl/vendor/venue/create-venue');
+      log('full url ==> $url');
+
+      var request = http.MultipartRequest('POST', url);
+
+      /// Add the form fields
+      request.fields.addAll({
         'name': nameController.text.trim(),
         'location': locationController.text.trim(),
-        'days': daysController.text.trim(),
-        'address': {
-          'address': addressController.text.trim(),
-          'city': cityController.text.trim(),
-        },
-        'capacity': int.parse(capacityController.text.trim()),
-        'timings': [timingsController.text.trim()],
-        'price': int.parse(priceController.text.trim()),
-        'numberOfPitches': int.parse(numberOfPitchesController.text.trim()),
-        'sports': selectedCategory.value,
-        'pitches': pitches,
-      };
+        // 'days': selectedDay.value,
+        'days': selectedDay.value.isNotEmpty ? selectedDay.value : 'Monday',
+        'address[address]': addressController.text.trim(),
+        'address[city]': cityController.text.trim(),
+        'capacity': capacityController.text.trim(),
+        // 'sports': selectedCategory.value,
+        'sports': selectedCategory.value.isNotEmpty
+            ? selectedCategory.value
+            : 'football',
+        'timings[0]': startTimingController.text.trim(),
+        'timings[1]': endTimingController.text.trim(),
+        'price': priceController.text.trim(),
+        'numberOfPitches': numberOfPitchesController.text.trim(),
+        // 'vendorId': '66fbf10fa333a95cfea62b67',
+        // 'amenities[]': '66ec131c1da9ed250e2ff36b',
+      });
 
-      log('Body Data ::: ${data.toString()}');
+       
+      for (int i = 0; i < pitches.length; i++) {
+        var pitch = pitches[i];
 
-      /// Send login request
-      final response =
-          await VendorHttpHelper.post2('vendor/venue/create-venue', data);
-      log(response.body);
+        // Ensure the fields are not null or empty
+        String pitchName = pitch['pitchName'] ?? 'Pitch A';
+        String sportType = pitch['sportType'] ?? 'football';
+        String size = pitch['size'] ?? '20x50';
+        String slotDuration = pitch['slotduration'] ?? '1';
+
+        request.fields.addAll({
+          'pitches[$i][pitchName]': pitchName,
+          'pitches[$i][sportType]': sportType,
+          'pitches[$i][size]': size,
+          'pitches[$i][slotduration]': slotDuration,
+        });
+
+        // Add availability details for each pitch
+        for (int j = 0; j < pitch['availability'].length; j++) {
+          var availability = pitch['availability'][j];
+
+          String day = availability['day'] ?? 'Monday';
+          String startTime = availability['startTime'] ?? '09:00';
+          String endTime = availability['endTime'] ?? '18:00';
+
+          request.fields.addAll({
+            'pitches[$i][availability][$j][day]': day,
+            'pitches[$i][availability][$j][startTime]': startTime,
+            'pitches[$i][availability][$j][endTime]': endTime,
+          });
+        }
+      }
+
+      /// Add image to the request if selected
+      if (selectedImage != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'image',
+          selectedImage.value!.path,
+        ));
+      }
+      // Add headers to request
+      request.headers.addAll(headers);
+      // Send the request
+      http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 201) {
-        Get.off(
-          () => ViewListingScreen(),
-          transition: Transition.rightToLeft,
-        );
+        log(await response.stream.bytesToString());
+        // Navigate to the next screen
+        // Get.off(() => ViewListingScreen(), transition: Transition.rightToLeft);
       } else {
-        log('Status Code ::: ${response.body}');
-        // AppSnackbars.errorSnackBar(title: 'Oh Snap!', message: errorMessage);
+        log('Failed: ${response.reasonPhrase}');
+        // Error handling
       }
+
+      ///
     } catch (e) {
-      log('Error in Login $e');
+      log('Error: $e');
     } finally {
       isLoading(false);
     }
@@ -105,419 +193,14 @@ class AddVenueController extends GetxController {
     showMultiPitchDialog(numberOfPitches);
   }
 
-  /// Show the dialog to enter pitch details
-  void showMultiPitchDialog2(int numberOfPitches) {
-    /// Create TextEditingControllers for each pitch
-    List<TextEditingController> pitchNameControllers =
-        List.generate(numberOfPitches, (index) => TextEditingController());
-    List<TextEditingController> sportTypeControllers =
-        List.generate(numberOfPitches, (index) => TextEditingController());
-    List<TextEditingController> sizeControllers =
-        List.generate(numberOfPitches, (index) => TextEditingController());
-
-    var availabilityDayControllers = List.generate(numberOfPitches,
-        (index) => <TextEditingController>[TextEditingController()]).obs;
-    var availabilityStartTimeControllers = List.generate(numberOfPitches,
-        (index) => <TextEditingController>[TextEditingController()]).obs;
-    var availabilityEndTimeControllers = List.generate(numberOfPitches,
-        (index) => <TextEditingController>[TextEditingController()]).obs;
-
-    ///
-    Get.dialog(
-      barrierDismissible: false,
-      Dialog(
-        backgroundColor: Colors.white, // Dialog background color
-        child: Container(
-          width: Get.width, //* 0.9, // Custom width (90% of the screen)
-          height: Get.height * 0.85, // Custom height (85% of the screen)
-          padding: EdgeInsets.all(16), // Padding inside the dialog
-          child: Column(
-            children: [
-              Text(
-                'Enter Details for Pitches',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent, // Title color
-                ),
-              ),
-              SizedBox(height: 10),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: List.generate(numberOfPitches, (index) {
-                      int pitchNumber = index + 1;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Pitch $pitchNumber Details',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.green, // Section title color
-                              ),
-                            ),
-                            SizedBox(height: 8),
-
-                            // Pitch Name
-                            CustomTextFormField(
-                              controller: pitchNameControllers[index],
-                              hintText: 'Pitch Name',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              filled: true,
-                              fillColor: Colors
-                                  .grey.shade200, // Input field background
-                            ),
-                            SizedBox(height: 10),
-
-                            // Sport Type
-                            CustomTextFormField(
-                              controller: sportTypeControllers[index],
-                              hintText: 'Sport Type',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              filled: true,
-                              fillColor: Colors.grey.shade200,
-                            ),
-                            SizedBox(height: 10),
-
-                            // Pitch Size
-                            CustomTextFormField(
-                              controller: sizeControllers[index],
-                              hintText: 'Pitch Size (e.g., 50x100)',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              filled: true,
-                              fillColor: Colors.grey.shade200,
-                            ),
-                            SizedBox(height: 10),
-
-                            /// Availability fields for this pitch
-                            Obx(
-                              () => Column(
-                                children: List.generate(
-                                  availabilityDayControllers[index].length,
-                                  (availIndex) => Row(
-                                    children: [
-                                      // Day
-                                      Expanded(
-                                        child: CustomTextFormField(
-                                          controller:
-                                              availabilityDayControllers[index]
-                                                  [availIndex],
-                                          hintText: 'Day (e.g., Monday)',
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                          filled: true,
-                                          fillColor: Colors.grey.shade200,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10),
-
-                                      // Start Time
-                                      Expanded(
-                                        child: CustomTextFormField(
-                                          controller:
-                                              availabilityStartTimeControllers[
-                                                  index][availIndex],
-                                          hintText: 'Start Time (e.g., 08:00)',
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                          filled: true,
-                                          fillColor: Colors.grey.shade200,
-                                        ),
-                                      ),
-                                      SizedBox(width: 10),
-
-                                      // End Time
-                                      Expanded(
-                                        child: CustomTextFormField(
-                                          controller:
-                                              availabilityEndTimeControllers[
-                                                  index][availIndex],
-                                          hintText: 'End Time (e.g., 20:00)',
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey),
-                                          filled: true,
-                                          fillColor: Colors.grey.shade200,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                availabilityDayControllers[index]
-                                    .add(TextEditingController());
-                                availabilityStartTimeControllers[index]
-                                    .add(TextEditingController());
-                                availabilityEndTimeControllers[index]
-                                    .add(TextEditingController());
-
-                                // Refresh to rebuild the UI
-                                availabilityDayControllers.refresh();
-                                availabilityStartTimeControllers.refresh();
-                                availabilityEndTimeControllers.refresh();
-                              },
-                              child: Text(
-                                'Add Another Availability',
-                                style: TextStyle(
-                                    color: Colors.blue), // Button text color
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      for (int i = 0; i < numberOfPitches; i++) {
-                        List<Map<String, String>> availabilityList = [];
-                        for (var j = 0;
-                            j < availabilityDayControllers[i].length;
-                            j++) {
-                          availabilityList.add({
-                            'day': availabilityDayControllers[i][j].text,
-                            'startTime':
-                                availabilityStartTimeControllers[i][j].text,
-                            'endTime':
-                                availabilityEndTimeControllers[i][j].text,
-                          });
-                        }
-                        // Add pitch details to the pitches list
-                        pitches.add({
-                          'pitchName': pitchNameControllers[i].text,
-                          'sportType': sportTypeControllers[i].text,
-                          'size': sizeControllers[i].text,
-                          'availability': availabilityList,
-                        });
-                      }
-                      Get.back();
-                    },
-                    child: Text(
-                      'Add Pitches',
-                      style:
-                          TextStyle(color: Colors.green), // Button text color
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.red), // Button text color
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void showMultiPitchDialogDONE(int numberOfPitches) {
-    /// Create TextEditingControllers for each pitch
-    List<TextEditingController> pitchNameControllers =
-        List.generate(numberOfPitches, (index) => TextEditingController());
-    List<TextEditingController> sportTypeControllers =
-        List.generate(numberOfPitches, (index) => TextEditingController());
-    List<TextEditingController> sizeControllers =
-        List.generate(numberOfPitches, (index) => TextEditingController());
-
-    /// Nested list of controllers for availability (day, startTime, endTime)
-    /// Observable nested list of controllers for availability (day, startTime, endTime)
-
-    var availabilityDayControllers = List.generate(numberOfPitches,
-        (index) => <TextEditingController>[TextEditingController()]).obs;
-    var availabilityStartTimeControllers = List.generate(numberOfPitches,
-        (index) => <TextEditingController>[TextEditingController()]).obs;
-    var availabilityEndTimeControllers = List.generate(numberOfPitches,
-        (index) => <TextEditingController>[TextEditingController()]).obs;
-
-    ///
-    Get.dialog(
-      barrierDismissible: false,
-      AlertDialog(
-        title: Text('Enter Details for Pitches'),
-        content: SizedBox(
-          width: double.maxFinite,
-          // height: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: List.generate(numberOfPitches, (index) {
-                int pitchNumber = index + 1;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /// text title
-                      Text(
-                        'Pitch $pitchNumber Details',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8),
-
-                      /// Pitch Name
-                      CustomTextFormField(
-                        controller: pitchNameControllers[index],
-                        hintText: 'Pitch Name',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                      ),
-                      SizedBox(height: 10),
-
-                      /// Sport Type
-                      CustomTextFormField(
-                        controller: sportTypeControllers[index],
-                        hintText: 'Sport Type',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                      ),
-                      SizedBox(height: 10),
-
-                      /// Pitch Size
-                      CustomTextFormField(
-                        controller: sizeControllers[index],
-                        hintText: 'Pitch Size (e.g., 50x100)',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
-                      ),
-                      SizedBox(height: 10),
-
-                      /// Reactive Availability fields for this pitch
-                      Obx(
-                        () => Column(
-                          children: List.generate(
-                            availabilityDayControllers[index].length,
-                            (availIndex) => Padding(
-                              padding: const EdgeInsets.only(bottom: 12.0),
-                              child: Row(
-                                children: [
-                                  /// Day
-                                  Expanded(
-                                    flex: 1,
-                                    child: CustomTextFormField(
-                                      controller:
-                                          availabilityDayControllers[index]
-                                              [availIndex],
-                                      hintText: 'Day (e.g., Monday)',
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      filled: true,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  // Start Time
-                                  Expanded(
-                                    flex: 1,
-                                    child: CustomTextFormField(
-                                      controller:
-                                          availabilityStartTimeControllers[
-                                              index][availIndex],
-                                      hintText: 'Start Time (e.g., 08:00)',
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      filled: true,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  // End Time
-                                  Expanded(
-                                    flex: 1,
-                                    child: CustomTextFormField(
-                                      controller:
-                                          availabilityEndTimeControllers[index]
-                                              [availIndex],
-                                      hintText: 'End Time (e.g., 20:00)',
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      filled: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          log('Add Another Availability Button pressed!');
-                          availabilityDayControllers[index]
-                              .add(TextEditingController());
-                          availabilityStartTimeControllers[index]
-                              .add(TextEditingController());
-                          availabilityEndTimeControllers[index]
-                              .add(TextEditingController());
-                          // Refresh to rebuild the UI
-                          availabilityDayControllers.refresh();
-                          availabilityStartTimeControllers.refresh();
-                          availabilityEndTimeControllers.refresh();
-                        },
-                        child: Text('Add Another Availability'),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              // Collect all the pitch details and close dialog
-              for (int i = 0; i < numberOfPitches; i++) {
-                // Add pitch details logic here
-                // Collect availability for each pitch
-                List<Map<String, String>> availabilityList = [];
-                for (var j = 0; j < availabilityDayControllers[i].length; j++) {
-                  availabilityList.add({
-                    'day': availabilityDayControllers[i][j].text,
-                    'startTime': availabilityStartTimeControllers[i][j].text,
-                    'endTime': availabilityEndTimeControllers[i][j].text,
-                  });
-                }
-                // Add pitch details to the pitches list
-                pitches.add({
-                  'pitchName': pitchNameControllers[i].text,
-                  'sportType': sportTypeControllers[i].text,
-                  'size': sizeControllers[i].text,
-                  'availability': availabilityList,
-                });
-              }
-              Get.back();
-            },
-            child: Text('Add Pitches'),
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: Text('Cancel'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void showMultiPitchDialog(int numberOfPitches) {
     List<TextEditingController> pitchNameControllers =
         List.generate(numberOfPitches, (index) => TextEditingController());
     List<TextEditingController> sportTypeControllers =
         List.generate(numberOfPitches, (index) => TextEditingController());
     List<TextEditingController> sizeControllers =
+        List.generate(numberOfPitches, (index) => TextEditingController());
+    List<TextEditingController> slotdurationControllers =
         List.generate(numberOfPitches, (index) => TextEditingController());
 
     // List of strings for day selection
@@ -559,16 +242,42 @@ class AddVenueController extends GetxController {
                         filled: true,
                       ),
                       SizedBox(height: 10),
-                      CustomTextFormField(
-                        controller: sportTypeControllers[index],
-                        hintText: 'Sport Type',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        filled: true,
+
+                      // CustomTextFormField(
+                      //   controller: sportTypeControllers[index],
+                      //   hintText: 'Sport Type',
+                      //   hintStyle: TextStyle(color: Colors.grey),
+                      //   filled: true,
+                      // ),
+                      CustomDropDown(
+                        icon: Container(
+                          child: CustomImageView(
+                              imagePath: AppImages.imgArrowdown),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 18.h, vertical: 13.h),
+                        hintText: "Select Sport",
+                        items: ['Select Sport', 'football', 'cricket'],
+                        value: sportTypeControllers[index].text.isEmpty
+                            ? 'Select Sport'
+                            : sportTypeControllers[index].text,
+                        onChanged: (value) {
+                          sportTypeControllers[index].text = value;
+                        },
                       ),
                       SizedBox(height: 10),
                       CustomTextFormField(
                         controller: sizeControllers[index],
                         hintText: 'Pitch Size (e.g., 50x100)',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        filled: true,
+                      ),
+                      SizedBox(height: 10),
+
+                      /// slot duration
+                      CustomTextFormField(
+                        controller: slotdurationControllers[index],
+                        hintText: 'Slot Duration (e.g. 1)',
                         hintStyle: TextStyle(color: Colors.grey),
                         filled: true,
                       ),
@@ -715,6 +424,138 @@ class AddVenueController extends GetxController {
       ),
     );
   }
-
-  ///
 }
+
+/**
+/// build SignUp
+  /**
+  Future<void> buildSubmit() async {
+    try {
+      /// Start Loading
+      isLoading(true);
+
+      /// Check Internet Connectivity
+      /// Form Validation
+      if (!addVenueFormKey.currentState!.validate()) {
+        isLoading(false);
+        return;
+      }
+
+      /// prepare sign up data
+      final data = {
+        'name': nameController.text.trim(),
+        'location': locationController.text.trim(),
+        'days': daysController.text.trim(),
+        'address': {
+          'address': addressController.text.trim(),
+          'city': cityController.text.trim(),
+        },
+        'capacity': int.parse(capacityController.text.trim()),
+        'timings': [timingsController.text.trim()],
+        'price': int.parse(priceController.text.trim()),
+        'numberOfPitches': int.parse(numberOfPitchesController.text.trim()),
+        'sports': selectedCategory.value,
+        'amenities': [],
+        'pitches': pitches,
+        'image': '',
+      };
+
+      log('Body Data ::: ${data.toString()}');
+
+      /// Send login request
+      final response =
+          await VendorHttpHelper.post2('vendor/venue/create-venue', data);
+      log(response.body);
+
+      if (response.statusCode == 201) {
+        Get.off(
+          () => ViewListingScreen(),
+          transition: Transition.rightToLeft,
+        );
+      } else {
+        log('Status Code ::: ${response.body}');
+        // AppSnackbars.errorSnackBar(title: 'Oh Snap!', message: errorMessage);
+      }
+    } catch (e) {
+      log('Error in Login $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+ */
+  /// build Submit Venue from
+  /**
+  Future<void> buildSubmit() async {
+    try {
+      /// Start Loading
+      isLoading(true);
+
+      /// Check Internet Connectivity
+      /// Form Validation
+      if (!addVenueFormKey.currentState!.validate()) {
+        isLoading(false);
+        return;
+      }
+
+      /// Authorization headers
+      var headers = {'Authorization': 'Bearer ${token.value}'};
+      log('headers ::: ${headers}');
+
+      /// Create the Multipart request
+      var _baseUrl = VendorHttpHelper.baseUrl;
+      log('_baseUrl ::: $_baseUrl');
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$_baseUrl/vendor/venue/create-venue'),
+      );
+
+      /// Add the form fields
+      request.fields.addAll({
+        'name': nameController.text.trim(),
+        'location': locationController.text.trim(),
+        'days': daysController.text.trim(),
+        'address[address]': addressController.text.trim(),
+        'address[city]': cityController.text.trim(),
+        'capacity': capacityController.text.trim(),
+        'sports': selectedCategory.value,
+        'timings[0]': timingsController.text.trim(),
+        'timings[1]': endTimingsController.text.trim(),
+        'price': priceController.text.trim(),
+        'numberOfPitches': numberOfPitchesController.text.trim(),
+        'vendorId': '66fbf10fa333a95cfea62b67',
+        'amenities[]': '66ec131c1da9ed250e2ff36b',
+        'pitches[0][pitchName]': pitches[0]['pitchName'],
+        'pitches[0][sportType]': pitches[0]['sportType'],
+        'pitches[0][size]': pitches[0]['size'],
+        'pitches[0][slotduration]': pitches[0]['slotduration'],
+        'pitches[0][availability][0][day]': pitches[0]['availability'][0]
+            ['day'],
+        'pitches[0][availability][0][startTime]': pitches[0]['availability'][0]
+            ['startTime'],
+        'pitches[0][availability][0][endTime]': pitches[0]['availability'][0]
+            ['endTime'],
+        'image': imageUrlController.text,
+      });
+      // Add headers to request
+      request.headers.addAll(headers);
+      // Send the request
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
+        // Navigate to the next screen
+        Get.off(() => ViewListingScreen(), transition: Transition.rightToLeft);
+      } else {
+        print('Failed: ${response.reasonPhrase}');
+        // Error handling
+      }
+
+      ///
+    } catch (e) {
+      print('Error: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
+ */
+ */
