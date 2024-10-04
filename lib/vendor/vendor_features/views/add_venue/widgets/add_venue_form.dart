@@ -9,9 +9,7 @@ import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
 import 'package:appkickoff/vendor/utils/validator/validator.dart';
 import 'package:appkickoff/vendor/vendor_features/controllers/add_venue/add_venue_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../controllers/add_venue/widgets/time_selection.dart';

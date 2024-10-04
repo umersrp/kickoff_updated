@@ -83,7 +83,7 @@ class ViewListingScreen extends StatelessWidget {
   _buildBookingList(ViewListingController controller) {
     return Obx(
       () {
-        if (!controller.isLoading.value && controller.currentPage.value == 1) {
+        if (controller.isLoading.value && controller.currentPage.value == 1) {
           // return const Text('Data loading');
           return Expanded(
             child: ListView.separated(
@@ -96,19 +96,21 @@ class ViewListingScreen extends StatelessWidget {
               },
             ),
           );
-        } else if (controller.vendorVenues.isEmpty) {
-          return Center(
-            child: Text(
-              'No venues found!',
-              style: GoogleFonts.inter(
-                // textStyle: Theme.of(Get.context!).textTheme.displayLarge,
-                fontSize: 28,
-                color: AppColors.gray100,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          );
-        } else {
+        }
+        // else if (controller.vendorVenues.isEmpty) {
+        //   return Center(
+        //     child: Text(
+        //       'No venues found!',
+        //       style: GoogleFonts.inter(
+        //         // textStyle: Theme.of(Get.context!).textTheme.displayLarge,
+        //         fontSize: 28,
+        //         color: AppColors.gray100,
+        //         fontWeight: FontWeight.w700,
+        //       ),
+        //     ),
+        //   );
+        // }
+        else {
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo.metrics.pixels ==
