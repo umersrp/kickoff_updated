@@ -22,77 +22,95 @@ class VendorHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
-    return Stack(
-      children: [
-        /// Background Image
-        BgImage(),
+    return FutureBuilder(
+      future: precacheImage(AssetImage(AppImages.bg), context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Stack(
+            children: [
+              /// Background Image
+              BgImage(),
 
-        /// Scaffold with semi-transparent background
-        Scaffold(
-          backgroundColor: AppColors.primary.withOpacity(0.5),
+              /// Scaffold with semi-transparent background
+              Scaffold(
+                backgroundColor: AppColors.primary.withOpacity(0.5),
 
-          /// appbar
-          appBar: CustomAppBar(
-            paddingTop: 10,
-            bgColor: Colors.transparent,
-            leadingIcon: AppImages.arrow_back,
-            leadingOnPressed: () => Get.back(),
-            centerTitle: true,
-            title: CustomImageView(
-              // height: 50,
-              width: 60,
-              // imagePath: AppImages.imgKickOffAcademy,
-              imagePath: AppImages.logo5000x5000,
-            ),
-          ),
+                /// appbar
+                appBar: CustomAppBar(
+                  paddingTop: 10,
+                  bgColor: Colors.transparent,
+                  leadingIcon: AppImages.arrow_back,
+                  leadingOnPressed: () => Get.back(),
+                  centerTitle: true,
+                  title: CustomImageView(
+                    // height: 50,
+                    width: 60,
+                    // imagePath: AppImages.imgKickOffAcademy,
+                    imagePath: AppImages.logo5000x5000,
+                  ),
+                ),
 
-          ////
-          body: Padding(
-            padding: EdgeInsets.all(24.h),
-            child: Column(
-              children: [
-                /// Header Section
-                const HomeHeader(),
-                SizedBox(height: 120.h),
-
-                /// Main Buttons
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.h),
+                ////
+                body: Padding(
+                  padding: EdgeInsets.all(24.h),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomButton(
-                        text: 'Venue Listings',
-                        onTap: () => Get.to(
-                          () => ViewListingScreen(),
-                          transition: Transition.rightToLeft,
+                      /// Header Section
+                      const HomeHeader(),
+                      SizedBox(height: 120.h),
+
+                      /// Main Buttons
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.h),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomButton(
+                              text: 'Venue Listings',
+                              onTap: () => Get.to(
+                                () => ViewListingScreen(),
+                                transition: Transition.rightToLeft,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            CustomButton(
+                              text: 'View Bookings',
+                              onTap: () {
+                                log('Tapped on Button');
+                                Get.to(
+                                  () => ViewBookingScreen(),
+                                  transition: Transition.rightToLeft,
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      CustomButton(
-                        text: 'View Bookings',
-                        onTap: () {
-                          log('Tapped on Button');
-                          Get.to(
-                            () => ViewBookingScreen(),
-                            transition: Transition.rightToLeft,
-                          );
-                        },
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
 
-          /// Bottom Navigation Bar
-          // bottomNavigationBar: Padding(
-          //   padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
-          //   child: CustomBottomNavBar(),
-          // ),
-        ),
-      ],
+                /// Bottom Navigation Bar
+                // bottomNavigationBar: Padding(
+                //   padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
+                //   child: CustomBottomNavBar(),
+                // ),
+              ),
+            ],
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: AppColors.primary.withOpacity(0.5),
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+            ),
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
     );
   }
 }

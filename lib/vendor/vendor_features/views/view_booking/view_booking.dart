@@ -224,7 +224,7 @@ class ViewBookingListItemWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     CustomImageView(
-                      imagePath: AppImages.apple,
+                      imagePath: AppImages.venue,
                       height: 24.h,
                       width: 24.h,
                     ),

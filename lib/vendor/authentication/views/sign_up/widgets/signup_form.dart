@@ -131,38 +131,38 @@ class SignupForm extends StatelessWidget {
           const SizedBox(height: 10),
 
           /// confirm password.
-          Text(
-            'Confirm password',
-            style: Theme.of(context)
-                .textTheme
-                .labelLarge!
-                .copyWith(color: Colors.white),
-          ),
-          const SizedBox(height: 5),
-          Obx(() => CustomTextFormField(
-                controller: controller.confirmPasswordController,
-                obscureText: controller.confirmPassword.value,
-                hintText: 'Confirm Password',
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 18.h, vertical: 18.h),
-                filled: true,
-                fillColor: AppColors.gray100,
-                suffix: IconButton(
-                  onPressed: () => controller.confirmPassword.value =
-                      !controller.confirmPassword.value,
-                  icon: Icon(controller.confirmPassword.value
-                      ? Iconsax.eye_slash
-                      : Iconsax.eye),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
-                  } else if (value != controller.passwordController.text) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-              )),
+          // Text(
+          //   'Confirm password',
+          //   style: Theme.of(context)
+          //       .textTheme
+          //       .labelLarge!
+          //       .copyWith(color: Colors.white),
+          // ),
+          // const SizedBox(height: 5),
+          // Obx(() => CustomTextFormField(
+          //       controller: controller.confirmPasswordController,
+          //       obscureText: controller.confirmPassword.value,
+          //       hintText: 'Confirm Password',
+          //       contentPadding:
+          //           EdgeInsets.symmetric(horizontal: 18.h, vertical: 18.h),
+          //       filled: true,
+          //       fillColor: AppColors.gray100,
+          //       suffix: IconButton(
+          //         onPressed: () => controller.confirmPassword.value =
+          //             !controller.confirmPassword.value,
+          //         icon: Icon(controller.confirmPassword.value
+          //             ? Iconsax.eye_slash
+          //             : Iconsax.eye),
+          //       ),
+          //       validator: (value) {
+          //         if (value == null || value.isEmpty) {
+          //           return 'Please confirm your password';
+          //         } else if (value != controller.passwordController.text) {
+          //           return 'Passwords do not match';
+          //         }
+          //         return null;
+          //       },
+          //     )),
           const SizedBox(height: 30),
 
           /// sign up button.

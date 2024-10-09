@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../common/app_snackbars/snackbars.dart';
+import '../../../utils/constants/app_images.dart';
 import '../../../utils/helpers/http_helper.dart';
 
 class SignupController extends GetxController {
@@ -23,6 +24,11 @@ class SignupController extends GetxController {
   final isLoading = false.obs;
 
   /// oninit
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
   /// build SignUp
   Future<void> buildSignUp() async {
     try {

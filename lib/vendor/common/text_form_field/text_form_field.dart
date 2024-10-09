@@ -114,7 +114,11 @@ class CustomTextFormField extends StatelessWidget {
   ///
   InputDecoration get decoration => InputDecoration(
         hintText: hintText ?? "",
-        hintStyle: hintStyle ?? Theme.of(Get.context!).textTheme.titleSmall,
+        hintStyle: hintStyle ??
+            Theme.of(Get.context!)
+                .textTheme
+                .titleSmall!
+                .copyWith(color: AppColors.gray500),
         prefixIcon: prefix,
         prefixIconConstraints: prefixConstraints,
         suffixIcon: suffix,

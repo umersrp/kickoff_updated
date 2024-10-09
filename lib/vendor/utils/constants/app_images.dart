@@ -7,7 +7,7 @@ class AppImages {
   // static String test = 'assets/images/eyes.svg';
   static String arrow_back = 'assets/images/img_arrow_left.svg';
   // static String test = 'assets/images/img_arrow_right.svg';
-  // static String test = 'assets/images/img_calendar.svg';
+  //
   // static String test = 'assets/images/img_checkmark.svg';
   // static String test = 'assets/images/img_clock.svg';
   // static String test = 'assets/images/img_group_127.svg';
@@ -18,7 +18,7 @@ class AppImages {
   // static String test = 'assets/images/img_minus.svg';
   // static String test = 'assets/images/img_music.svg';
   // static String test = 'assets/images/img_plus.svg';
-  // static String test = 'assets/images/img_ticket.svg';
+
   // static String test = 'assets/images/img_wifi.svg';
   // static String test = 'assets/images/refresh.svg';
 
@@ -38,6 +38,12 @@ class AppImages {
   static String refresh_1 = 'assets/images/refresh.svg';
   static String eyes = 'assets/images/eyes.svg';
   static String time = 'assets/images/time.svg';
+  
+  static String status = 'assets/images/img_ticket.svg';
+  static String date = 'assets/images/img_calendar.svg';
+  static String venue = 'assets/images/venue-64.png';
+  static String address = 'assets/images/address-64.png';
+  static String createAt = 'assets/images/img_material_symbols_spa_rounded.svg';
 
   /// social buttons
   static String facebook = '$imagePath/Facebook.png';

@@ -30,7 +30,7 @@ class BookingListItemWidget extends StatelessWidget {
           Row(
             children: [
               CustomImageView(
-                imagePath: AppImages.apple,
+                imagePath: AppImages.venue,
                 height: 24.h,
                 width: 24.h,
               ),
@@ -65,7 +65,7 @@ class BookingListItemWidget extends StatelessWidget {
           Row(
             children: [
               CustomImageView(
-                imagePath: AppImages.apple,
+                imagePath: AppImages.address,
                 height: 24.h,
                 width: 24.h,
               ),
@@ -98,7 +98,7 @@ class BookingListItemWidget extends StatelessWidget {
           Row(
             children: [
               CustomImageView(
-                imagePath: AppImages.apple,
+                imagePath: AppImages.date,
                 height: 24.h,
                 width: 24.h,
               ),
@@ -131,7 +131,7 @@ class BookingListItemWidget extends StatelessWidget {
           Row(
             children: [
               CustomImageView(
-                imagePath: AppImages.apple,
+                imagePath: AppImages.status,
                 height: 24.h,
                 width: 24.h,
               ),
@@ -168,7 +168,7 @@ class BookingListItemWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     CustomImageView(
-                      imagePath: AppImages.apple,
+                      imagePath: AppImages.createAt,
                       height: 24.h,
                       width: 24.h,
                     ),

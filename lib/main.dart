@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:appkickoff/personalization/service/controller/aboutUs_controller.dart';
+import 'package:appkickoff/vendor/utils/constants/bg_image.dart';
 import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
 import 'package:appkickoff/vendor/vendor_features/views/home/home.dart';
 

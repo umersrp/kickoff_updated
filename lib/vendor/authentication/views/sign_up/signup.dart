@@ -15,47 +15,67 @@ class VendorSignupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put<SignupController>(SignupController());
 
-    return Stack(
-      children: [
-        /// bg image
-        BgImage(),
+    return FutureBuilder(
+      future: precacheImage(AssetImage(AppImages.bg), context),
+      builder: (context, snapshot) {
+        // Wait until the background image is fully loaded
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Stack(
+            children: [
+              /// bg image
+              BgImage(),
 
-        /// Scaffold
-        Scaffold(
-          key: UniqueKey(),
-          backgroundColor: AppColors.primary.withOpacity(0.5),
+              /// Scaffold
+              Scaffold(
+                key: UniqueKey(),
+                backgroundColor: AppColors.primary.withOpacity(0.5),
 
-          /// app bar
-          appBar: CustomAppBar(
-            paddingTop: 10,
-            bgColor: Colors.transparent, //primary.withOpacity(0.5), 
-            leadingIcon: AppImages.arrow_back,
-            leadingOnPressed: () => Get.back(),
-          ),
+                /// app bar
+                appBar: CustomAppBar(
+                  paddingTop: 10,
+                  bgColor: Colors.transparent, //primary.withOpacity(0.5),
+                  leadingIcon: AppImages.arrow_back,
+                  leadingOnPressed: () => Get.back(),
+                ),
 
-          /// Main body
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// 1. Logo, Title & SubTitle
-                  // const SizedBox(height: 54),
-                  const LoginHeader(title: 'Sign up'),
-                  const SizedBox(height: 30),
+                /// Main body
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /// 1. Logo, Title & SubTitle
+                        // const SizedBox(height: 54),
+                        const LoginHeader(title: 'Sign up'),
+                        const SizedBox(height: 30),
 
-                  /// 2. Form...
-                  const SignupForm(),
-                  const SizedBox(height: 30),
+                        /// 2. Form...
+                        const SignupForm(),
+                        const SizedBox(height: 30),
 
-                  ///
-                ],
-              ),
+                        ///
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          );
+        } else {
+          // While the background image is loading, show a loading indicator
+          return Scaffold(
+            backgroundColor: AppColors.primary.withOpacity(0.5),
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
             ),
-          ),
-        )
-      ],
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
     );
   }
 }
