@@ -52,19 +52,14 @@ class SignupController extends GetxController {
 
       /// Send login request
       final response = await VendorHttpHelper.post2('vendor/signup', data);
-      log(response.body);
+      // log(response.body);
       if (response.statusCode == 201) {
         final responseBody = json.decode(response.body);
         final successMessage =
             responseBody['message'] ?? 'Vendor created successfully';
-
+        Get.back();
         AppSnackbars.successSnackBar(
             title: 'Oh Snap!', message: successMessage);
-        Get.back();
-        // Get.to(
-        //   () => VendorHomeScreen(),
-        //   transition: Transition.rightToLeft,
-        // );
       } else {
         // Extract the message from the response body
         final responseBody = json.decode(response.body);

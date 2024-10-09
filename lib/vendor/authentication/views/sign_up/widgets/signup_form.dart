@@ -168,13 +168,13 @@ class SignupForm extends StatelessWidget {
           /// sign up button.
           SizedBox(
             width: double.infinity,
+            height: 50,
             child: ElevatedButton(
               onPressed: () {
                 log('Login Button pressed!');
                 controller.buildSignUp();
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
                 backgroundColor: AppColors.gray100,
