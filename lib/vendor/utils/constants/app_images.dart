@@ -3,6 +3,7 @@ class AppImages {
 
   /// Image folder path
   static String imagePath = 'assets/images';
+  static String venueTest = 'assets/92.jpg';
   // static String test = 'assets/images/img_arrowdown.svg';
   // static String test = 'assets/images/eyes.svg';
   static String arrow_back = 'assets/images/img_arrow_left.svg';

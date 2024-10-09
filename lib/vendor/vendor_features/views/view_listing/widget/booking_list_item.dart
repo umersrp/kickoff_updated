@@ -8,6 +8,7 @@ import 'package:appkickoff/vendor/vendor_features/models/booking_list/venue_mode
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../manage_calender/manage_calender.dart';
+import '../../venue_detaills/venue_details.dart';
 
 class BookingListItemWidget extends StatelessWidget {
   const BookingListItemWidget({super.key, required this.bookingItem});
@@ -16,219 +17,226 @@ class BookingListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      padding: EdgeInsets.all(14.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.h),
-      ),
-      child: Column(
-        // mainAxisSize: MainAxisSize.min ,
-        children: [
-          /// 1.  Venue Name
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: AppImages.venue,
-                height: 24.h,
-                width: 24.h,
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Venue Name',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14.fSize,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Inter',
-                        ),
-                  ),
-                  Text(
-                    bookingItem.name,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Inter',
-                        ),
-                  ),
-                ],
-              )
-            ],
-          ),
-          SizedBox(height: 10.h),
-
-          /// 2.  address
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: AppImages.address,
-                height: 24.h,
-                width: 24.h,
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Venue Address',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                  Text(
-                    '${bookingItem.address.address}, ${bookingItem.address.city}',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-
-          /// Sports
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: AppImages.date,
-                height: 24.h,
-                width: 24.h,
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Date',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                  Text(
-                    bookingItem.date.toString(),
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-
-          /// only number of pitches
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: AppImages.status,
-                height: 24.h,
-                width: 24.h,
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Status',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                  Text(
-                    bookingItem.location,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-
-          /// Capacity
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                child: Row(
+    return InkWell(
+      onTap: () {
+        log('Clicked on Venue item');
+        Get.to(() => VenueDetailScreen(venue: bookingItem),
+            transition: Transition.rightToLeft);
+      },
+      child: Container(
+        width: double.maxFinite,
+        padding: EdgeInsets.all(14.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.h),
+        ),
+        child: Column(
+          // mainAxisSize: MainAxisSize.min ,
+          children: [
+            // 1.  Venue Name
+            Row(
+              children: [
+                CustomImageView(
+                  imagePath: AppImages.venue,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomImageView(
-                      imagePath: AppImages.createAt,
-                      height: 24.h,
-                      width: 24.h,
+                    Text(
+                      'Venue Name',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Inter',
+                          ),
                     ),
-                    SizedBox(width: 15),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Created At',
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    fontSize: 14.fSize,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                        ),
-                        Text(
-                          bookingItem.numberOfPitches.toString(),
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: AppColors.primary,
-                                    fontSize: 12.fSize,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                        ),
-                      ],
+                    Text(
+                      bookingItem.name,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Inter',
+                          ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            SizedBox(height: 10.h),
+
+            /// 2.  address
+            Row(
+              children: [
+                CustomImageView(
+                  imagePath: AppImages.address,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Venue Address',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                    Text(
+                      '${bookingItem.address.address}, ${bookingItem.address.city}',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
                     ),
                   ],
                 ),
-              ),
+              ],
+            ),
+            SizedBox(height: 10.h),
 
-              /// Manage Calendar Button
-              SizedBox(
-                height: 34,
-                child: ElevatedButton(
-                  onPressed: () {
-                    log('Manage Calendar Button');
-                    Get.to(() => ManageCalendarScreen(),
-                        transition: Transition.rightToLeft);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.h),
+            /// Sports
+            Row(
+              children: [
+                CustomImageView(
+                  imagePath: AppImages.date,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Sports',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                  ),
-                  child: Text(
-                    'Manage Calendar',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: Colors.white,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Hind',
-                        ),
+                    Text(
+                      bookingItem.sports,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+
+            /// only number of pitches
+            Row(
+              children: [
+                CustomImageView(
+                  imagePath: AppImages.status,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Number of pitches',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                    Text(
+                      bookingItem.numberOfPitches.toString(),
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+
+            /// Capacity
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Row(
+                    children: [
+                      CustomImageView(
+                        imagePath: AppImages.createAt,
+                        height: 24.h,
+                        width: 24.h,
+                      ),
+                      SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Capacity',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                          ),
+                          Text(
+                            bookingItem.capacity.toString(),
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: AppColors.primary,
+                                      fontSize: 12.fSize,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+
+                /// Manage Calendar Button
+                SizedBox(
+                  height: 34,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      log('Manage Calendar Button');
+                      Get.to(() => ManageCalendarScreen(),
+                          transition: Transition.rightToLeft);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6.h),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    child: Text(
+                      'Manage Calendar',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: Colors.white,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Hind',
+                          ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

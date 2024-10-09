@@ -13,6 +13,7 @@ class ViewListingController extends GetxController {
   static ViewListingController get instance => Get.find();
 
   /// vars
+  final carousalCurrentIndex = 0.obs;
   var vendorVenues = <Venue>[].obs;
   var currentPage = 1.obs;
   var hasNextPage = true.obs;
@@ -70,36 +71,10 @@ class ViewListingController extends GetxController {
     }
   }
 
-  ///
-  Future<void> fetchVenues12() async {
-    if (isLoading.value || !hasNextPage.value) return;
-    try {
-      isLoading(true);
-
-      final response = await VendorHttpHelper.get('vendor/venue/get-venues');
-      log("Response: $response");
-      final data = BookingListItemModelOrg.fromJson(response);
-      vendorVenues.addAll(
-          data.venues.where((element) => element.status == 'active').toList());
-      
-      // currentPage.value++;
-      // hasNextPage.value = data.pagination.ha
-      final paginationData = response['pagination'];
-      if (paginationData != null) {
-        final pagination = Pagination.fromJson(paginationData);
-        currentPage.value = pagination.currentPage + 1;
-        hasNextPage.value = currentPage.value <= pagination.totalPages;
-      } else {
-        hasNextPage.value = false;
-      }
-    } catch (e) {
-      log("Error fetching Featured Vendors: $e");
-      AppSnackbars.errorSnackBar(title: 'Error', message: e.toString());
-    } finally {
-      isLoading(false);
-    }
+  /// --- Update Page Navigational Dots
+  void updatePageIndicator(index) {
+    carousalCurrentIndex.value = index;
   }
-
   ///
   @override
   void onClose() {
