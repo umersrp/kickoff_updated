@@ -166,8 +166,8 @@ class AddVenueController extends GetxController {
       if (response.statusCode == 201) {
         isLoading(false);
         log(await response.stream.bytesToString());
-        await ViewListingController.instance.fetchVenues();
-        Get.back();
+        // Return to the home screen with a result
+         Get.back(result: true);
         // Get.off(() => ViewListingScreen(), transition: Transition.leftToRight);
       } else {
         log('Failed: ${response.reasonPhrase}');

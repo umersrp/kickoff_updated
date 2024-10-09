@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:appkickoff/features/screens/Sign%20Up/signup.dart';
 import 'package:appkickoff/features/screens/bookandplay/login/loginbook&play.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/constant/colors.dart';
 import '../../../utils/image_string/image_strings.dart';
+import '../../../vendor/authentication/views/sign_up/signup.dart';
 import '../Login/BookVenueLogin.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -54,7 +57,8 @@ class RegisterPage extends StatelessWidget {
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Bookvenuelogin()),
+                        MaterialPageRoute(
+                            builder: (context) => Bookvenuelogin()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -71,9 +75,11 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text('OR',style: TextStyle(color: Colors.white,fontSize: 14),),
+                Text(
+                  'OR',
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
                 const SizedBox(height: 10),
-
                 SizedBox(
                   width: 250,
                   height: 60,
@@ -97,13 +103,22 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 30,),
-
-                TextButton(onPressed: () {
-
-                },
-                child: Text('Register As A Vendor',style: TextStyle(color: Colors.white,fontSize: 15),)),
-
+                SizedBox(
+                  height: 30,
+                ),
+                TextButton(
+                    onPressed: () {
+                      log('Register as a vendor ');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => VendorSignupScreen()),
+                      );
+                    },
+                    child: Text(
+                      'Register As A Vendor',
+                      style: TextStyle(color: Colors.white, fontSize: 15),
+                    )),
               ],
             ),
           ),

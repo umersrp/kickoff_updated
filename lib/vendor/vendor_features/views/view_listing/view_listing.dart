@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:appkickoff/vendor/common/app_bar/app_bar.dart';
 import 'package:appkickoff/vendor/common/filter_btn_img/filter_btn_img.dart';
 import 'package:appkickoff/vendor/common/text_form_field/text_form_field.dart';
@@ -32,7 +34,7 @@ class ViewListingScreen extends StatelessWidget {
           /// appbar
           appBar: CustomAppBar(
             paddingTop: 10,
-            bgColor: Colors.transparent, //primary.withOpacity(0.5),
+            bgColor: Colors.transparent,
             leadingIcon: AppImages.arrow_back,
             leadingOnPressed: () => Get.back(),
             centerTitle: true,
@@ -45,10 +47,13 @@ class ViewListingScreen extends StatelessWidget {
             ),
             actions: [
               IconButton.filled(
-                onPressed: () => Get.to(
-                  () => AddVenueScreen(),
-                  transition: Transition.rightToLeft,
-                ),
+                onPressed: () async {
+                  var result = await Get.to(() => AddVenueScreen());
+                  //transition: Transition.rightToLeft,
+                  if (result == true) {
+                    controller.fetchVenues(isRefresh: true);
+                  }
+                },
                 icon: Icon(
                   Iconsax.add_circle,
                   color: Colors.white,
@@ -96,21 +101,7 @@ class ViewListingScreen extends StatelessWidget {
               },
             ),
           );
-        }
-        // else if (controller.vendorVenues.isEmpty) {
-        //   return Center(
-        //     child: Text(
-        //       'No venues found!',
-        //       style: GoogleFonts.inter(
-        //         // textStyle: Theme.of(Get.context!).textTheme.displayLarge,
-        //         fontSize: 28,
-        //         color: AppColors.gray100,
-        //         fontWeight: FontWeight.w700,
-        //       ),
-        //     ),
-        //   );
-        // }
-        else {
+        } else {
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
               if (scrollInfo.metrics.pixels ==
@@ -222,3 +213,54 @@ class ViewListingScreen extends StatelessWidget {
     );
   }
 }
+
+ 
+/**
+class ViewListingScreen extends StatelessWidget {
+  const ViewListingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(ViewListingController());
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () async {
+              var result = await Get.to(() => AddVenueScreen());
+              if (result == true) {
+                controller.fetchVenues(isRefresh: true); // Fetch the updated venues
+              }
+            },
+          ),
+        ],
+      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(12),
+          child: ListView.separated(
+            controller: controller.scrollController,
+            padding: EdgeInsets.zero,
+            physics: BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: controller.vendorVenues.length,
+            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+            itemBuilder: (_, index) {
+              return BookingListItemWidget(
+                bookingItem: controller.vendorVenues[index],
+              );
+            },
+          ),
+        );
+      }),
+    );
+  }
+}
+*/

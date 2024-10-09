@@ -36,8 +36,43 @@ class ViewListingController extends GetxController {
   }
 
   /// fetch all venders venue
-  Future<void> fetchVenues() async {
-    if (isLoading.value || !hasNextPage.value) return; 
+  Future<void> fetchVenues({bool isRefresh = false}) async {
+    if (isLoading.value || (!hasNextPage.value && !isRefresh)) return;
+
+    try {
+      isLoading(true);
+      if (isRefresh) {
+        currentPage.value = 1;
+        hasNextPage.value = true;
+        vendorVenues.clear(); // Clear old data
+      }
+
+      final response = await VendorHttpHelper.get('vendor/venue/get-venues');
+      // log("Response: $response");
+
+      final data = BookingListItemModelOrg.fromJson(response);
+      vendorVenues.addAll(
+          data.venues.where((element) => element.status == 'active').toList());
+
+      final paginationData = response['pagination'];
+      if (paginationData != null) {
+        final pagination = Pagination.fromJson(paginationData);
+        currentPage.value = pagination.currentPage + 1;
+        hasNextPage.value = currentPage.value <= pagination.totalPages;
+      } else {
+        hasNextPage.value = false;
+      }
+    } catch (e) {
+      log("Error fetching Featured Vendors: $e");
+      AppSnackbars.errorSnackBar(title: 'Error', message: e.toString());
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  ///
+  Future<void> fetchVenues12() async {
+    if (isLoading.value || !hasNextPage.value) return;
     try {
       isLoading(true);
 
@@ -50,11 +85,11 @@ class ViewListingController extends GetxController {
       // currentPage.value++;
       // hasNextPage.value = data.pagination.ha
       final paginationData = response['pagination'];
-      if(paginationData != null ){
+      if (paginationData != null) {
         final pagination = Pagination.fromJson(paginationData);
-         currentPage.value = pagination.currentPage + 1;
-         hasNextPage.value = currentPage.value <= pagination.totalPages;
-      } else{
+        currentPage.value = pagination.currentPage + 1;
+        hasNextPage.value = currentPage.value <= pagination.totalPages;
+      } else {
         hasNextPage.value = false;
       }
     } catch (e) {

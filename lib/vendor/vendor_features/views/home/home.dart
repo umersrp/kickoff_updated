@@ -36,6 +36,7 @@ class VendorHomeScreen extends StatelessWidget {
             paddingTop: 10,
             bgColor: Colors.transparent,
             leadingIcon: AppImages.arrow_back,
+            leadingOnPressed: () => Get.back(),
             centerTitle: true,
             title: CustomImageView(
               // height: 50,

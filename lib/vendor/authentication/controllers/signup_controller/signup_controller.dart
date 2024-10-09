@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 import '../../../common/app_snackbars/snackbars.dart';
 import '../../../utils/helpers/http_helper.dart';
-import '../../../vendor_features/views/home/home.dart';
 
 class SignupController extends GetxController {
   static SignupController get instance => Get.find();
@@ -52,22 +51,26 @@ class SignupController extends GetxController {
       };
 
       /// Send login request
-      // Call the signup API
       final response = await VendorHttpHelper.post2('vendor/signup', data);
-      // log(response.body);
+      log(response.body);
       if (response.statusCode == 201) {
-        // log('message ::: $response');
-        Get.to(
-          () => VendorHomeScreen(),
-          transition: Transition.rightToLeft,
-        );
-      } else { 
-         // Extract the message from the response body
+        final responseBody = json.decode(response.body);
+        final successMessage =
+            responseBody['message'] ?? 'Vendor created successfully';
+
+        AppSnackbars.successSnackBar(
+            title: 'Oh Snap!', message: successMessage);
+        Get.back();
+        // Get.to(
+        //   () => VendorHomeScreen(),
+        //   transition: Transition.rightToLeft,
+        // );
+      } else {
+        // Extract the message from the response body
         final responseBody = json.decode(response.body);
         final errorMessage = responseBody['message'] ?? 'Signup failed';
-         
-        AppSnackbars.errorSnackBar(
-            title: 'Oh Snap!', message: errorMessage);
+
+        AppSnackbars.errorSnackBar(title: 'Oh Snap!', message: errorMessage);
       }
     } catch (e) {
       log('Error in Login $e');

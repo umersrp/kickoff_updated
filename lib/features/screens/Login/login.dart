@@ -95,92 +95,95 @@ class LoginPage extends StatelessWidget {
 
                     // Password Field with Obx for dynamic state
                     Obx(() => TextFormField(
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white),
-                        ),
-                        labelText: 'Password',
-                        labelStyle: GoogleFonts.poppins(color: Colors.white),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _loginController.obscurePassword.value
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: Colors.white,
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            labelText: 'Password',
+                            labelStyle:
+                                GoogleFonts.poppins(color: Colors.white),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _loginController.obscurePassword.value
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                _loginController.obscurePassword.value =
+                                    !_loginController.obscurePassword.value;
+                              },
+                            ),
                           ),
-                          onPressed: () {
-                            _loginController.obscurePassword.value = !_loginController.obscurePassword.value;
+                          obscureText: _loginController.obscurePassword.value,
+                          controller: _loginController.passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null; // Return null if validation passes
                           },
-                        ),
-                      ),
-                      obscureText: _loginController.obscurePassword.value,
-                      controller: _loginController.passwordController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null; // Return null if validation passes
-                      },
-                    )),
+                        )),
                     SizedBox(height: 10),
 
                     // Login Button with loading state
                     Obx(() => MaterialButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      ),
-                      elevation: 5.0,
-                      minWidth: 300.0,
-                      height: 55,
-                      color: Color(0xff2e2d77),
-                      child: _loginController.isLoading.value
-                          ? CircularProgressIndicator(
-                        valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                          : Text(
-                        'Login',
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                              fontSize: 20.0, color: Colors.white),
-                        ),
-                      ),
-                      onPressed: _loginController.isLoading.value
-                          ? null // Disable button while loading
-                          : () {
-                        if (_formKey.currentState!.validate()) {
-                          _loginController.loginUser(
-                            context,
-                            _loginController.usernameController.text,
-                            _loginController.passwordController.text,
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Error'),
-                                content:
-                                Text('All fields are required.'),
-                                actions: [
-                                  TextButton(
-                                    child: Text('OK'),
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the dialog
-                                    },
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0)),
+                          ),
+                          elevation: 5.0,
+                          minWidth: 300.0,
+                          height: 55,
+                          color: Color(0xff2e2d77),
+                          child: _loginController.isLoading.value
+                              ? CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                )
+                              : Text(
+                                  'Login',
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                        fontSize: 20.0, color: Colors.white),
                                   ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      },
-                    )),
+                                ),
+                          onPressed: _loginController.isLoading.value
+                              ? null // Disable button while loading
+                              : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    _loginController.loginUser(
+                                      context,
+                                      _loginController.usernameController.text,
+                                      _loginController.passwordController.text,
+                                    );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Error'),
+                                          content:
+                                              Text('All fields are required.'),
+                                          actions: [
+                                            TextButton(
+                                              child: Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Close the dialog
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                        )),
 
                     SizedBox(height: 10),
                     Text(
@@ -207,7 +210,7 @@ class LoginPage extends StatelessWidget {
                         'Registration',
                         style: GoogleFonts.poppins(
                           textStyle:
-                          TextStyle(fontSize: 20.0, color: Colors.white),
+                              TextStyle(fontSize: 20.0, color: Colors.white),
                         ),
                       ),
                       onPressed: () {

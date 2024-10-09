@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:appkickoff/vendor/authentication/controllers/signup_controller/signup_controller.dart';
-import 'package:appkickoff/vendor/authentication/views/login/vendor_login.dart';
 import 'package:appkickoff/vendor/common/text_form_field/text_form_field.dart';
 import 'package:appkickoff/vendor/utils/constants/app_colors.dart';
 import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
@@ -40,7 +39,6 @@ class SignupForm extends StatelessWidget {
                 EdgeInsets.symmetric(horizontal: 18.h, vertical: 18.h),
             filled: true,
             fillColor: AppColors.gray100,
-            
           ),
           const SizedBox(height: 10),
 
@@ -176,15 +174,22 @@ class SignupForm extends StatelessWidget {
                 controller.buildSignUp();
               },
               style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 backgroundColor: AppColors.gray100,
               ),
-              child: Text(
-                'Sign Up',
-                style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                      color: AppColors.primary,
-                      fontSize: 16.h,
-                      fontWeight: FontWeight.bold,
-                    ),
+              child: Obx(
+                () => controller.isLoading.value
+                    ? CircularProgressIndicator()
+                    : Text(
+                        'Sign Up',
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: AppColors.primary,
+                              fontSize: 16.h,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
               ),
             ),
           ),

@@ -5,6 +5,7 @@ import 'package:appkickoff/vendor/utils/constants/app_colors.dart';
 import 'package:appkickoff/vendor/utils/constants/bg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../utils/constants/app_images.dart';
 import 'widgets/signup_form.dart';
 
 class VendorSignupScreen extends StatelessWidget {
@@ -25,20 +26,22 @@ class VendorSignupScreen extends StatelessWidget {
           backgroundColor: AppColors.primary.withOpacity(0.5),
 
           /// app bar
-          // appBar: CustomAppBar(
-          //   bgColor: AppColors.primary.withOpacity(0.5),
-          //   title: Text('Sign up'),
-          // ),
+          appBar: CustomAppBar(
+            paddingTop: 10,
+            bgColor: Colors.transparent, //primary.withOpacity(0.5), 
+            leadingIcon: AppImages.arrow_back,
+            leadingOnPressed: () => Get.back(),
+          ),
 
           /// Main body
           body: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(24),
+              padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// 1. Logo, Title & SubTitle
-                  const SizedBox(height: 54),
+                  // const SizedBox(height: 54),
                   const LoginHeader(title: 'Sign up'),
                   const SizedBox(height: 30),
 

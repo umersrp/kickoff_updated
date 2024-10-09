@@ -9,11 +9,13 @@ import 'package:appkickoff/vendor/utils/constants/app_images.dart';
 import 'package:appkickoff/vendor/utils/constants/bg_image.dart';
 import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
 import 'package:appkickoff/vendor/vendor_features/controllers/view_booking_controller/view_booking_controller.dart';
+import 'package:appkickoff/vendor/vendor_features/models/book_venue/booking_venues.dart';
 import 'package:appkickoff/vendor/vendor_features/models/booking_list/boking_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../booking_details/booking_details.dart';
+import '../view_listing/widget/booking_item_shimmer.dart';
 
 class ViewBookingScreen extends StatelessWidget {
   const ViewBookingScreen({super.key});
@@ -33,10 +35,12 @@ class ViewBookingScreen extends StatelessWidget {
           /// appbar
           appBar: CustomAppBar(
             bgColor: Colors.transparent,
-            leadingIcon: AppImages.drawarIcon,
+            // leadingIcon: AppImages.drawarIcon,
+            leadingIcon: AppImages.arrow_back,
+            leadingOnPressed: () => Get.back(),
             centerTitle: true,
             title: Text(
-              'View Listings',
+              'View Booking',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
@@ -67,19 +71,51 @@ class ViewBookingScreen extends StatelessWidget {
   }
 
   _buildBookingList(ViewBookingController controller) {
-    return Expanded(
-      child: ListView.separated(
-        padding: EdgeInsets.zero,
-        physics: BouncingScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: controller.bookingItems.length,
-        separatorBuilder: (_, __) => SizedBox(height: 12.h),
-        itemBuilder: (_, index) {
-          return ViewBookingListItemWidget(
-            bookingItem: controller.bookingItems[index],
+    return Obx(
+      () {
+        if (controller.isLoading.value && controller.currentPage.value == 1) {
+          // return const Text('Data loading');
+          return Expanded(
+            child: ListView.separated(
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 5,
+              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+              itemBuilder: (_, __) {
+                return BookingListItemShimmer();
+              },
+            ),
           );
-        },
-      ),
+        }
+        if (controller.bookingVenue.isEmpty) {
+          return Text('No Data');
+        }
+        return NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels ==
+                    scrollInfo.metrics.maxScrollExtent &&
+                !controller.isLoading.value &&
+                controller.hasNextPage.value) {
+              controller.fetchBookedVenues();
+            }
+            return false;
+          },
+          child: Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.zero,
+              physics: BouncingScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: controller.bookingVenue.length,
+              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+              itemBuilder: (_, index) {
+                return ViewBookingListItemWidget(
+                  bookingItem: controller.bookingVenue[index],
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -167,7 +203,7 @@ class ViewBookingScreen extends StatelessWidget {
 class ViewBookingListItemWidget extends StatelessWidget {
   const ViewBookingListItemWidget({super.key, required this.bookingItem});
 
-  final BookingListItemModel bookingItem;
+  final Booking bookingItem;
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +242,7 @@ class ViewBookingListItemWidget extends StatelessWidget {
                                   ),
                         ),
                         Text(
-                          bookingItem.bookingIdNumber,
+                          bookingItem.pitch,
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     color: AppColors.primary,
@@ -256,7 +292,7 @@ class ViewBookingListItemWidget extends StatelessWidget {
                         ),
                   ),
                   Text(
-                    bookingItem.venueTitle,
+                    bookingItem.venue.name,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: AppColors.primary,
                           fontSize: 12.fSize,
@@ -289,7 +325,7 @@ class ViewBookingListItemWidget extends StatelessWidget {
                         ),
                   ),
                   Text(
-                    bookingItem.date,
+                    bookingItem.date.toString(),
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: AppColors.primary,
                           fontSize: 12.fSize,
@@ -322,7 +358,7 @@ class ViewBookingListItemWidget extends StatelessWidget {
                         ),
                   ),
                   Text(
-                    bookingItem.StatusTitle,
+                    bookingItem.slot.time!,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: AppColors.primary,
                           fontSize: 12.fSize,
@@ -360,7 +396,7 @@ class ViewBookingListItemWidget extends StatelessWidget {
                                   ),
                         ),
                         Text(
-                          bookingItem.createAt,
+                          bookingItem.pitch,
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     color: AppColors.primary,
