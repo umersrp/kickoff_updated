@@ -10,7 +10,6 @@ import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
 import 'package:appkickoff/vendor/vendor_features/controllers/view_listing_controller/view_listing_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import '../add_venue/add_venue.dart';
 import 'widget/booking_item_shimmer.dart';

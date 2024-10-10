@@ -11,6 +11,7 @@ import 'package:appkickoff/vendor/vendor_features/controllers/add_venue/add_venu
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../../controllers/add_venue/widgets/time_selection.dart';
 
@@ -20,6 +21,14 @@ class AddVenueForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AddVenueController());
+    // List of amenities for selection
+    final List<String> amenitiesList = [
+      'WiFi',
+      'Parking',
+      'Air Conditioning',
+      'Restrooms',
+      'Cafeteria',
+    ];
     return Form(
       key: controller.addVenueFormKey,
       child: Column(
@@ -57,7 +66,6 @@ class AddVenueForm extends StatelessWidget {
           SizedBox(height: 10.h),
 
           /// Image Picker (Add this section)
-
           Row(
             children: [
               ElevatedButton.icon(
@@ -141,6 +149,23 @@ class AddVenueForm extends StatelessWidget {
                 EdgeInsets.symmetric(horizontal: 18.h, vertical: 18.h),
           ),
           SizedBox(height: 10.h),
+
+          /// amenities
+          // CustomTextFormField(
+          //   controller: controller.amenitiesController,
+          //   hintText: 'Amenities',
+          //   hintStyle: Theme.of(Get.context!)
+          //       .textTheme
+          //       .titleSmall!
+          //       .copyWith(color: AppColors.blueGray100),
+          //   validator: (value) =>
+          //       MyValidator.validateEmptyText('Amenities', value),
+          //   filled: true,
+          //   contentPadding:
+          //       EdgeInsets.symmetric(horizontal: 18.h, vertical: 18),
+          // ),
+
+          // SizedBox(height: 10.h),
 
           /// Street Address
           CustomTextFormField(
@@ -278,22 +303,6 @@ class AddVenueForm extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(height: 10.h),
-
-          // /// amenities
-          // CustomTextFormField(
-          //   controller: controller.amenitiesController,
-          //   hintText: 'Amenities',
-          //   hintStyle: Theme.of(Get.context!)
-          //       .textTheme
-          //       .titleSmall!
-          //       .copyWith(color: AppColors.blueGray100),
-          //   validator: (value) =>
-          //       MyValidator.validateEmptyText('Amenities', value),
-          //   filled: true,
-          //   contentPadding:
-          //       EdgeInsets.symmetric(horizontal: 18.h, vertical: 18),
-          // ),
           SizedBox(height: 10.h),
 
           /// submit button

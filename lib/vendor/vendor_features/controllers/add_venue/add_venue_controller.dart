@@ -33,6 +33,7 @@ class AddVenueController extends GetxController {
   final priceController = TextEditingController();
   final numberOfPitchesController = TextEditingController();
   final amenitiesController = TextEditingController();
+   
   // File? selectedImage;
   var selectedImage = Rx<File?>(null);
   var selectedCategory = ''.obs;
@@ -119,6 +120,8 @@ class AddVenueController extends GetxController {
         // 'amenities[]': '66ec131c1da9ed250e2ff36b',
       });
 
+       
+
       for (int i = 0; i < pitches.length; i++) {
         var pitch = pitches[i];
 
@@ -167,7 +170,7 @@ class AddVenueController extends GetxController {
         isLoading(false);
         log(await response.stream.bytesToString());
         // Return to the home screen with a result
-         Get.back(result: true);
+        Get.back(result: true);
         // Get.off(() => ViewListingScreen(), transition: Transition.leftToRight);
       } else {
         log('Failed: ${response.reasonPhrase}');

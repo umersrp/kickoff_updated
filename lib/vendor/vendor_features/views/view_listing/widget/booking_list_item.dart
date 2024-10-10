@@ -212,8 +212,8 @@ class BookingListItemWidget extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       log('Manage Calendar Button');
-                      Get.to(() => ManageCalendarScreen(),
-                          transition: Transition.rightToLeft);
+                      // Get.to(() => ManageCalendarScreen(),
+                      //     transition: Transition.rightToLeft);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
