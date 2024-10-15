@@ -23,8 +23,10 @@ class AddVenueController extends GetxController {
 
   /// vars
   final addVenueFormKey = GlobalKey<FormState>();
+
   final nameController = TextEditingController();
   final locationController = TextEditingController();
+  final dayController = TextEditingController();
   final addressController = TextEditingController();
   final cityController = TextEditingController();
   final capacityController = TextEditingController();
@@ -33,7 +35,7 @@ class AddVenueController extends GetxController {
   final priceController = TextEditingController();
   final numberOfPitchesController = TextEditingController();
   final amenitiesController = TextEditingController();
-   
+
   // File? selectedImage;
   var selectedImage = Rx<File?>(null);
   var selectedCategory = ''.obs;
@@ -89,13 +91,10 @@ class AddVenueController extends GetxController {
         'Authorization': 'Bearer ${token.value}',
         'Content-Type': 'multipart/form-data',
       };
-      log('headers ::: ${headers}');
 
       /// Create the Multipart request
       var _baseUrl = VendorHttpHelper.baseUrl;
-      log('_baseUrl ::: $_baseUrl');
       var url = Uri.parse('$_baseUrl/vendor/venue/create-venue');
-      log('full url ==> $url');
 
       var request = http.MultipartRequest('POST', url);
 
@@ -103,8 +102,8 @@ class AddVenueController extends GetxController {
       request.fields.addAll({
         'name': nameController.text.trim(),
         'location': locationController.text.trim(),
-        // 'days': selectedDay.value,
-        'days': selectedDay.value.isNotEmpty ? selectedDay.value : 'Monday',
+        'days': dayController.text.trim(),
+        // 'days': selectedDay.value.isNotEmpty ? selectedDay.value : 'Monday',
         'address[address]': addressController.text.trim(),
         'address[city]': cityController.text.trim(),
         'capacity': capacityController.text.trim(),
@@ -120,16 +119,23 @@ class AddVenueController extends GetxController {
         // 'amenities[]': '66ec131c1da9ed250e2ff36b',
       });
 
-       
-
       for (int i = 0; i < pitches.length; i++) {
         var pitch = pitches[i];
 
         // Ensure the fields are not null or empty
+        // String pitchName = pitch['pitchName']; // ?? 'Pitch A';
+        // String sportType = pitch['sportType']; //?? 'football';
+        // String size = pitch['size']; // ?? '20x50';
+        // String slotDuration = pitch['slotduration']; //?? '1';
         String pitchName = pitch['pitchName'] ?? 'Pitch A';
         String sportType = pitch['sportType'] ?? 'football';
         String size = pitch['size'] ?? '20x50';
         String slotDuration = pitch['slotduration'] ?? '1';
+
+        log('Pitch Name :: $pitchName');
+        log('Pitch Sport Type:: $sportType');
+        log('Pitch Size :: $size');
+        log('Pitch Slot Duration :: $slotDuration');
 
         request.fields.addAll({
           'pitches[$i][pitchName]': pitchName,

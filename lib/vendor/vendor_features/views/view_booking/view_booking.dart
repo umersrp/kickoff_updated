@@ -14,6 +14,7 @@ import 'package:appkickoff/vendor/vendor_features/models/booking_list/boking_lis
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import '../booking_details/booking_details.dart';
 import '../view_listing/widget/booking_item_shimmer.dart';
 
@@ -56,8 +57,8 @@ class ViewBookingScreen extends StatelessWidget {
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSearchSection(),
-                SizedBox(height: 14.h),
-                _buildFilterSection(),
+                // SizedBox(height: 14.h),
+                // _buildFilterSection(),
                 SizedBox(height: 30.h),
                 _buildBookingList(controller),
               ],
@@ -88,7 +89,7 @@ class ViewBookingScreen extends StatelessWidget {
           );
         }
         if (controller.bookingVenue.isEmpty) {
-          return Text('No Data');
+          return Center(child: Text('No Data'));
         }
         return NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
@@ -207,270 +208,282 @@ class ViewBookingListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      padding: EdgeInsets.all(14.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.h),
-      ),
-      child: Column(
-        children: [
-          /// 1.  Booking ID Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                child: Row(
-                  children: [
-                    CustomImageView(
-                      imagePath: AppImages.venue,
-                      height: 24.h,
-                      width: 24.h,
-                    ),
-                    SizedBox(width: 15),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Booking ID',
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    fontSize: 14.fSize,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                  ),
-                        ),
-                        Text(
-                          bookingItem.pitch,
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: AppColors.primary,
-                                    fontSize: 12.fSize,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Inter',
-                                  ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-
-              /// Manage Calendar Button
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: SizedBox(
-                  width: 24,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: Icon(Iconsax.edit),
+    String formattedDate = DateFormat('dd/MM/yyyy').format(bookingItem.date);
+    String formattedTime = DateFormat('hh:mm a').format(bookingItem.date);
+    return InkWell(
+      onTap: () {
+        log('Booking Item Tapped');
+        Get.to(() => BookingDetailsScreen(booking: bookingItem),
+            transition: Transition.rightToLeft);
+      },
+      child: Container(
+        width: double.maxFinite,
+        padding: EdgeInsets.all(14.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.h),
+        ),
+        child: Column(
+          children: [
+            /// 1.  Venue name
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Row(
+                    children: [
+                      CustomImageView(
+                        imagePath: AppImages.venue,
+                        height: 24.h,
+                        width: 24.h,
+                      ),
+                      SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Venue Name',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                    ),
+                          ),
+                          Text(
+                            bookingItem.venue.name,
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: AppColors.primary,
+                                      fontSize: 12.fSize,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                    ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
 
-          /// 2.  Venue Row
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: AppImages.apple,
-                height: 24.h,
-                width: 24.h,
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Venue Name',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                  Text(
-                    bookingItem.venue.name,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
+                /// Manage Calendar Button
+                // Padding(
+                //   padding: const EdgeInsets.only(right: 8.0),
+                //   child: SizedBox(
+                //     width: 24,
+                //     child: IconButton(
+                //       onPressed: () {},
+                //       icon: Icon(Iconsax.edit),
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+            SizedBox(height: 10.h),
 
-          /// Date Row
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: AppImages.apple,
-                height: 24.h,
-                width: 24.h,
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Date',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                  Text(
-                    bookingItem.date.toString(),
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-
-          /// Status Row
-          Row(
-            children: [
-              CustomImageView(
-                imagePath: AppImages.apple,
-                height: 24.h,
-                width: 24.h,
-              ),
-              SizedBox(width: 15),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Status',
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                  Text(
-                    bookingItem.slot.time!,
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.w400,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-
-          /// Created At Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                child: Row(
+            /// 2.  address
+            Row(
+              children: [
+                CustomImageView(
+                  imagePath: AppImages.address,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomImageView(
-                      imagePath: AppImages.apple,
-                      height: 24.h,
-                      width: 24.h,
+                    Text(
+                      'Venue Address',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
                     ),
-                    SizedBox(width: 15),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Created At',
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    fontSize: 14.fSize,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                        ),
-                        Text(
-                          bookingItem.pitch,
-                          style:
-                              Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: AppColors.primary,
-                                    fontSize: 12.fSize,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                        ),
-                      ],
+                    Text(
+                      '${bookingItem.venue.address.address}, ${bookingItem.venue.address.city}',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
                     ),
                   ],
                 ),
-              ),
+              ],
+            ),
+            SizedBox(height: 10.h),
 
-              /// Manage Calendar Button
-              Row(
-                children: [
-                  SizedBox(
-                    height: 30,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        log('more Button');
-                        Get.to(() => BookingDetailsScreen(),
-                            transition: Transition.rightToLeft);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6.h),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+            /// Date Row
+            Row(
+              children: [
+                CustomImageView(
+                  imagePath: AppImages.date,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Booking Date',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                    Text(
+                      formattedDate,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+
+            /// Slot time
+            Row(
+              children: [
+                CustomImageView(
+                  imagePath: AppImages.status,
+                  height: 24.h,
+                  width: 24.h,
+                ),
+                SizedBox(width: 15),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Slot Time',
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                    Text(
+                      bookingItem.slot.time!,
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12.fSize,
+                            fontWeight: FontWeight.w400,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 10.h),
+
+            /// Created At Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  child: Row(
+                    children: [
+                      CustomImageView(
+                        imagePath: AppImages.createAt,
+                        height: 24.h,
+                        width: 24.h,
                       ),
-                      child: Text(
-                        'more..',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: Colors.white,
-                              fontSize: 12.fSize,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Hind',
-                            ),
+                      SizedBox(width: 15),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Created Date',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontSize: 14.fSize,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                          ),
+                          Text(
+                            '${formattedDate} ${formattedTime}',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: AppColors.primary,
+                                      fontSize: 12.fSize,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// Manage Calendar Button
+
+                Row(
+                  children: [
+                    SizedBox(
+                      height: 35,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          log('more Button');
+                          Get.to(
+                              () => BookingDetailsScreen(booking: bookingItem),
+                              transition: Transition.rightToLeft);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6.h),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                        child: Text(
+                          'View More..',
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 12.fSize,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Hind',
+                                  ),
+                        ),
                       ),
                     ),
-                  ),
 
-                  /// image no. 1
-                  CustomImageView(
-                    onTap: () {
-                      log('refresh icon');
-                    },
-                    imagePath: AppImages.refresh_1,
-                    height: 28,
-                  ),
+                    /// image no. 1
+                    // CustomImageView(
+                    //   onTap: () {
+                    //     log('refresh icon');
+                    //   },
+                    //   imagePath: AppImages.refresh_1,
+                    //   height: 28,
+                    // ),
 
-                  /// image no. 2
-                  CustomImageView(
-                    onTap: () {
-                      log('eye icon');
-                    },
-                    imagePath: AppImages.eyes,
-                    height: 28,
-                  ),
+                    /// image no. 2
+                    // CustomImageView(
+                    //   onTap: () {
+                    //     log('eye icon');
+                    //   },
+                    //   imagePath: AppImages.eyes,
+                    //   height: 28,
+                    // ),
 
-                  /// image no. 3
-                  CustomImageView(
-                    onTap: () {
-                      log('time icon');
-                    },
-                    imagePath: AppImages.time,
-                    height: 28,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+                    /// image no. 3
+                    // CustomImageView(
+                    //   onTap: () {
+                    //     log('time icon');
+                    //   },
+                    //   imagePath: AppImages.time,
+                    //   height: 28,
+                    // ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

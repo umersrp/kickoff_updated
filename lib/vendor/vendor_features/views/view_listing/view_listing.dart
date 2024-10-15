@@ -71,8 +71,8 @@ class ViewListingScreen extends StatelessWidget {
               children: [
                 _buildSearchSection(),
                 SizedBox(height: 14.h),
-                _buildFilterSection(),
-                SizedBox(height: 20.h),
+                // _buildFilterSection(),
+                // SizedBox(height: 20.h),
                 _buildBookingList(controller),
               ],
             ),
@@ -212,5 +212,3 @@ class ViewListingScreen extends StatelessWidget {
     );
   }
 }
-
- 

@@ -39,7 +39,7 @@ class TimeSelectionField extends StatelessWidget {
         if (pickedTime != null) {
           // Format the picked time and update the controller
           final now = DateTime.now();
-          final formattedTime = DateFormat('HH:mm').format(
+          final formattedTime = DateFormat('hh:mm a').format(
             DateTime(now.year, now.month, now.day, pickedTime.hour,
                 pickedTime.minute),
           );

@@ -1,13 +1,20 @@
 import 'package:appkickoff/vendor/utils/constants/app_colors.dart';
 import 'package:appkickoff/vendor/utils/constants/bg_image.dart';
 import 'package:appkickoff/vendor/utils/constants/size_utils.dart';
-import 'package:flutter/material.dart'; 
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../models/book_venue/booking_venues.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  const BookingDetailsScreen({super.key});
+  final Booking booking;
+
+  const BookingDetailsScreen({super.key, required this.booking});
 
   @override
   Widget build(BuildContext context) {
+    String formattedDate = DateFormat('dd/MM/yyyy').format(booking.date);
+    String formattedTime = DateFormat('hh:mm a').format(booking.date);
     return Stack(
       children: [
         /// bg image
@@ -47,26 +54,26 @@ class BookingDetailsScreen extends StatelessWidget {
                     SizedBox(height: 30.h),
 
                     /// booking ID
-                    _buildDetailItem(
-                      context,
-                      icon: Icons.confirmation_number,
-                      title: 'Booking ID',
-                      value: 'BN-8688854',
-                    ),
+                    // _buildDetailItem(
+                    //   context,
+                    //   icon: Icons.confirmation_number,
+                    //   title: 'Booking ID',
+                    //   value: '${booking.id}',
+                    // ),
 
                     /// Venue Name
                     _buildDetailItem(
                       context,
                       icon: Icons.location_on,
                       title: 'Venue Name',
-                      value: 'Conference A',
+                      value: '${booking.venue.name}',
                     ),
 
                     _buildDetailItem(
                       context,
                       icon: Icons.calendar_today,
                       title: 'Date',
-                      value: '14/07/2024',
+                      value: '${formattedDate}',
                     ),
 
                     /// Time
@@ -74,31 +81,32 @@ class BookingDetailsScreen extends StatelessWidget {
                       context,
                       icon: Icons.access_time,
                       title: 'Time',
-                      value: '9:00 AM - 11:00 AM',
+                      value: '${booking.slot.time}',
                     ),
 
                     /// Status
-                    _buildDetailItem(
-                      context,
-                      icon: Icons.check_circle,
-                      title: 'Status',
-                      value: 'Confirmed',
-                    ),
+                    // _buildDetailItem(
+                    //   context,
+                    //   icon: Icons.check_circle,
+                    //   title: 'Status',
+                    //   value: 'Confirmed',
+                    // ),
 
                     /// Created At
                     _buildDetailItem(
                       context,
                       icon: Icons.edit_calendar,
                       title: 'Created At',
-                      value: '10/07/2024, 8:00 AM',
+                      value: '${formattedDate} ${formattedTime}',
                     ),
 
                     /// Client Name
                     _buildDetailItem(
                       context,
                       icon: Icons.person,
-                      title: 'Client Name',
-                      value: 'John Doe',
+                      title: 'Client Email',
+                      // value: 'John Doe',
+                      value: '${booking.user.email}',
                     ),
 
                     /// Client Contact
@@ -106,7 +114,7 @@ class BookingDetailsScreen extends StatelessWidget {
                       context,
                       icon: Icons.phone,
                       title: 'Client Contact',
-                      value: '+1234567890',
+                      value: '${booking.user.phone}',
                     ),
                   ],
                 ),
@@ -148,7 +156,7 @@ class BookingDetailsScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 16.h),
 
-                  /// Title and Value
+                  /// Title
                   Text(
                     title,
                     style: TextStyle(
@@ -160,16 +168,27 @@ class BookingDetailsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              Text(
-                value,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.fSize,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
+
+              /// Spacer to push the text to the end of the row
+              SizedBox(width: 16),
+
+              /// Value text
+              Flexible(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.fSize,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ),
               ),
-              // SizedBox(width: 16.h),
             ],
           ),
         ),

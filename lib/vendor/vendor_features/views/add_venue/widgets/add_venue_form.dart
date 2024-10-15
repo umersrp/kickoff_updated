@@ -11,7 +11,7 @@ import 'package:appkickoff/vendor/vendor_features/controllers/add_venue/add_venu
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
+// import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../../controllers/add_venue/widgets/time_selection.dart';
 
@@ -124,31 +124,45 @@ class AddVenueForm extends StatelessWidget {
           SizedBox(height: 10.h),
 
           /// Days
-          CustomDropDown(
-            icon: Container(
-              child: CustomImageView(imagePath: AppImages.imgArrowdown),
-            ),
-            hintText: "Select Day",
-            value: 'Select Day',
-            items: [
-              'Select Day',
-              'Monday',
-              'Tuesday',
-              'Wednesday',
-              'Thursday',
-              'Friday',
-              'Saturday',
-              'Sunday',
-            ],
-            onChanged: (value) {
-              controller.selectedDay.value = value;
-            },
-            boxDecoration:
-                BoxDecoration(borderRadius: BorderRadius.circular(12)),
+          CustomTextFormField(
+            controller: controller.dayController,
+            hintText: 'Monday-Tuesday',
+            hintStyle: Theme.of(Get.context!)
+                .textTheme
+                .titleSmall!
+                .copyWith(color: AppColors.blueGray100),
+            validator: (value) =>
+                MyValidator.validateEmptyText('Days Selection', value),
+            filled: true,
             contentPadding:
-                EdgeInsets.symmetric(horizontal: 18.h, vertical: 18.h),
+                EdgeInsets.symmetric(horizontal: 18.h, vertical: 18),
           ),
           SizedBox(height: 10.h),
+          // CustomDropDown(
+          //   icon: Container(
+          //     child: CustomImageView(imagePath: AppImages.imgArrowdown),
+          //   ),
+          //   hintText: "Select Day",
+          //   value: 'Select Day',
+          //   items: [
+          //     'Select Day',
+          //     'Monday',
+          //     'Tuesday',
+          //     'Wednesday',
+          //     'Thursday',
+          //     'Friday',
+          //     'Saturday',
+          //     'Sunday',
+          //   ],
+          //   onChanged: (value) {
+          //     controller.selectedDay.value = value;
+          //   },
+          //   boxDecoration:
+          //       BoxDecoration(borderRadius: BorderRadius.circular(12)),
+          //   contentPadding:
+          //       EdgeInsets.symmetric(horizontal: 18.h, vertical: 18.h),
+          // ),
+          // SizedBox(height: 10.h),
 
           /// amenities
           // CustomTextFormField(
@@ -271,6 +285,7 @@ class AddVenueForm extends StatelessWidget {
                 .copyWith(color: AppColors.blueGray100),
             validator: (value) => MyValidator.validateEmptyText('Price', value),
             filled: true,
+            textInputType: TextInputType.number,
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 18.h, vertical: 18),
           ),
