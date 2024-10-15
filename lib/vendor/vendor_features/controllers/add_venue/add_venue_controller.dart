@@ -214,11 +214,9 @@ class AddVenueController extends GetxController {
     List<TextEditingController> slotdurationControllers =
         List.generate(numberOfPitches, (index) => TextEditingController());
 
-    // List of strings for day selection
     var availabilityDays =
         List.generate(numberOfPitches, (index) => <String>['Select day']).obs;
 
-    // Time controllers
     var availabilityStartTimeControllers = List.generate(numberOfPitches,
         (index) => <TextEditingController>[TextEditingController()]).obs;
     var availabilityEndTimeControllers = List.generate(numberOfPitches,
@@ -230,7 +228,6 @@ class AddVenueController extends GetxController {
         title: Text('Enter Details for Pitches'),
         content: SizedBox(
           width: double.maxFinite,
-          // height: double.maxFinite,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -253,13 +250,6 @@ class AddVenueController extends GetxController {
                         filled: true,
                       ),
                       SizedBox(height: 10),
-
-                      // CustomTextFormField(
-                      //   controller: sportTypeControllers[index],
-                      //   hintText: 'Sport Type',
-                      //   hintStyle: TextStyle(color: Colors.grey),
-                      //   filled: true,
-                      // ),
                       CustomDropDown(
                         icon: Container(
                           child: CustomImageView(
@@ -301,7 +291,6 @@ class AddVenueController extends GetxController {
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: Row(
                                 children: [
-                                  /// Select day
                                   Expanded(
                                     flex: 1,
                                     child: CustomDropDown(
@@ -336,19 +325,6 @@ class AddVenueController extends GetxController {
                                     ),
                                   ),
                                   SizedBox(width: 10),
-
-                                  /// Start Time
-                                  // Expanded(
-                                  //   flex: 1,
-                                  //   child: CustomTextFormField(
-                                  //     controller:
-                                  //         availabilityStartTimeControllers[
-                                  //             index][availIndex],
-                                  //     hintText: 'Start Time (e.g., 08:00)',
-                                  //     hintStyle: TextStyle(color: Colors.grey),
-                                  //     filled: true,
-                                  //   ),
-                                  // ),
                                   Expanded(
                                     flex: 1,
                                     child: TimeSelectionField(
@@ -367,14 +343,6 @@ class AddVenueController extends GetxController {
                                               [availIndex],
                                       hintText: 'End Time (e.g., 20:00)',
                                     ),
-                                    // child: CustomTextFormField(
-                                    //   controller:
-                                    //       availabilityEndTimeControllers[index]
-                                    //           [availIndex],
-                                    //   hintText: 'End Time (e.g., 20:00)',
-                                    //   hintStyle: TextStyle(color: Colors.grey),
-                                    //   filled: true,
-                                    // ),
                                   ),
                                 ],
                               ),
@@ -414,10 +382,14 @@ class AddVenueController extends GetxController {
                     'endTime': availabilityEndTimeControllers[i][j].text,
                   });
                 }
+
+                /// Add the pitch data including slot duration
                 pitches.add({
                   'pitchName': pitchNameControllers[i].text,
                   'sportType': sportTypeControllers[i].text,
                   'size': sizeControllers[i].text,
+                  'slotduration':
+                      slotdurationControllers[i].text, // Fix: add slotduration
                   'availability': availabilityList,
                 });
               }
@@ -437,136 +409,4 @@ class AddVenueController extends GetxController {
   }
 }
 
-/**
-/// build SignUp
-  /**
-  Future<void> buildSubmit() async {
-    try {
-      /// Start Loading
-      isLoading(true);
-
-      /// Check Internet Connectivity
-      /// Form Validation
-      if (!addVenueFormKey.currentState!.validate()) {
-        isLoading(false);
-        return;
-      }
-
-      /// prepare sign up data
-      final data = {
-        'name': nameController.text.trim(),
-        'location': locationController.text.trim(),
-        'days': daysController.text.trim(),
-        'address': {
-          'address': addressController.text.trim(),
-          'city': cityController.text.trim(),
-        },
-        'capacity': int.parse(capacityController.text.trim()),
-        'timings': [timingsController.text.trim()],
-        'price': int.parse(priceController.text.trim()),
-        'numberOfPitches': int.parse(numberOfPitchesController.text.trim()),
-        'sports': selectedCategory.value,
-        'amenities': [],
-        'pitches': pitches,
-        'image': '',
-      };
-
-      log('Body Data ::: ${data.toString()}');
-
-      /// Send login request
-      final response =
-          await VendorHttpHelper.post2('vendor/venue/create-venue', data);
-      log(response.body);
-
-      if (response.statusCode == 201) {
-        Get.off(
-          () => ViewListingScreen(),
-          transition: Transition.rightToLeft,
-        );
-      } else {
-        log('Status Code ::: ${response.body}');
-        // AppSnackbars.errorSnackBar(title: 'Oh Snap!', message: errorMessage);
-      }
-    } catch (e) {
-      log('Error in Login $e');
-    } finally {
-      isLoading(false);
-    }
-  }
- */
-  /// build Submit Venue from
-  /**
-  Future<void> buildSubmit() async {
-    try {
-      /// Start Loading
-      isLoading(true);
-
-      /// Check Internet Connectivity
-      /// Form Validation
-      if (!addVenueFormKey.currentState!.validate()) {
-        isLoading(false);
-        return;
-      }
-
-      /// Authorization headers
-      var headers = {'Authorization': 'Bearer ${token.value}'};
-      log('headers ::: ${headers}');
-
-      /// Create the Multipart request
-      var _baseUrl = VendorHttpHelper.baseUrl;
-      log('_baseUrl ::: $_baseUrl');
-
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$_baseUrl/vendor/venue/create-venue'),
-      );
-
-      /// Add the form fields
-      request.fields.addAll({
-        'name': nameController.text.trim(),
-        'location': locationController.text.trim(),
-        'days': daysController.text.trim(),
-        'address[address]': addressController.text.trim(),
-        'address[city]': cityController.text.trim(),
-        'capacity': capacityController.text.trim(),
-        'sports': selectedCategory.value,
-        'timings[0]': timingsController.text.trim(),
-        'timings[1]': endTimingsController.text.trim(),
-        'price': priceController.text.trim(),
-        'numberOfPitches': numberOfPitchesController.text.trim(),
-        'vendorId': '66fbf10fa333a95cfea62b67',
-        'amenities[]': '66ec131c1da9ed250e2ff36b',
-        'pitches[0][pitchName]': pitches[0]['pitchName'],
-        'pitches[0][sportType]': pitches[0]['sportType'],
-        'pitches[0][size]': pitches[0]['size'],
-        'pitches[0][slotduration]': pitches[0]['slotduration'],
-        'pitches[0][availability][0][day]': pitches[0]['availability'][0]
-            ['day'],
-        'pitches[0][availability][0][startTime]': pitches[0]['availability'][0]
-            ['startTime'],
-        'pitches[0][availability][0][endTime]': pitches[0]['availability'][0]
-            ['endTime'],
-        'image': imageUrlController.text,
-      });
-      // Add headers to request
-      request.headers.addAll(headers);
-      // Send the request
-      http.StreamedResponse response = await request.send();
-      if (response.statusCode == 200) {
-        print(await response.stream.bytesToString());
-        // Navigate to the next screen
-        Get.off(() => ViewListingScreen(), transition: Transition.rightToLeft);
-      } else {
-        print('Failed: ${response.reasonPhrase}');
-        // Error handling
-      }
-
-      ///
-    } catch (e) {
-      print('Error: $e');
-    } finally {
-      isLoading(false);
-    }
-  }
- */
- */
+  
